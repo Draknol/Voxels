@@ -2,8 +2,10 @@
 #define WINDOW_H
 
 #include <util/Color.h>
+#include <util/Key.h>
 
 #include <string>
+#include <map>
 
 struct GLFWwindow;
 
@@ -11,17 +13,31 @@ class Window {
 private:
     GLFWwindow *window;
 
+    std::map<int, Key::State> glfwKeyStates;
+
+    static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+
 public:
     Window(int width, int height, const std::string &title);
     ~Window();
 
+    /// @brief Checks if the Window is marked for closing
     bool isOpen();
+
+    /// @brief Marks the Window for closing
+    void close();
 
     /// @brief Swap buffers to display updated window
     void display();
 
     /// @brief Set as active Window for static calls
     void setActive();
+
+    /// @brief Update width and height
+    void resize(int width, int height);
+
+    /// @brief Returns current state of given key (eg PRESSED)
+    Key::State getKeyState(Key::Action key);
 
     /// @brief Clear active Windows color buffer
     static void clear();

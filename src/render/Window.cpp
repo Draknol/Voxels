@@ -19,6 +19,10 @@ Window::Window(int width, int height, const std::string &title) {
         std::cerr << "ERROR::WINDOW::CREATE_WINDOW_FAILED\n";
         exit(-1);
     }
+
+    // Set callbacks
+    glfwSetWindowUserPointer(window, this);
+    glfwSetKeyCallback(window, Window::keyCallback);
 }
 
 Window::~Window() {
@@ -27,8 +31,22 @@ Window::~Window() {
     }
 }
 
+void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    Window *win = (Window *)glfwGetWindowUserPointer(window);
+
+    if (action == GLFW_PRESS) {
+        win->glfwKeyStates[key] = Key::State::PRESSED;
+    } else if (action == GLFW_RELEASE) {
+        win->glfwKeyStates[key] = Key::State::RELEASED;
+    }
+}
+
 bool Window::isOpen() {
     return !glfwWindowShouldClose(window);
+}
+
+void Window::close() {
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 void Window::display() {
@@ -37,6 +55,30 @@ void Window::display() {
 
 void Window::setActive() {
     glfwMakeContextCurrent(window);
+}
+
+void Window::resize(int width, int height) {
+    glfwSetWindowSize(window, width, height);
+}
+
+Key::State Window::getKeyState(Key::Action key) {
+    int glfwKey = Key::toGLFWKey(key);
+    Key::State &state = glfwKeyStates[glfwKey];
+
+    switch (state) {
+    case Key::State::PRESSED:
+        // Update to HELD for next time
+        state = Key::State::HELD;
+        return Key::State::PRESSED;
+    case Key::State::HELD:
+        return Key::State::HELD;
+    case Key::State::RELEASED:
+        // Update to IDLE for next time
+        state = Key::State::IDLE;
+        return Key::State::RELEASED;
+    default:
+        return Key::State::IDLE;
+    }
 }
 
 void Window::clear() {

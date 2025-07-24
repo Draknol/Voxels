@@ -1,5 +1,11 @@
 {
   "name": "voxels",
-  "version-string": "0.0.0",
-  "dependencies": ["glfw3", "glad", "glm", "stb"]
+  "version-string": "0.0.1",
+  "dependencies": [
+    "glfw3",
+    "glad",
+    "glm",
+    "stb",
+    "inih"
+  ]
 }
