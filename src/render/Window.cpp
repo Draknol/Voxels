@@ -22,7 +22,12 @@ Window::Window(int width, int height, const std::string &title) {
 
     // Set callbacks
     glfwSetWindowUserPointer(window, this);
-    glfwSetKeyCallback(window, Window::keyCallback);
+    glfwSetKeyCallback(window, keyCallback);
+    glfwSetFramebufferSizeCallback(window, resizeCallback);
+    glfwSetCursorPosCallback(window, cursorCallback);
+
+    // Get cursor position
+    glfwGetCursorPos(window, &lastCursorPosition.x, &lastCursorPosition.y);
 }
 
 Window::~Window() {
@@ -31,14 +36,34 @@ Window::~Window() {
     }
 }
 
+void Window::setCursorVisable(bool state) {
+    int glfwState = state ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
+    glfwSetInputMode(window, GLFW_CURSOR, glfwState);
+}
+
 void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     Window *win = (Window *)glfwGetWindowUserPointer(window);
-
-    if (action == GLFW_PRESS) {
-        win->glfwKeyStates[key] = Key::State::PRESSED;
-    } else if (action == GLFW_RELEASE) {
-        win->glfwKeyStates[key] = Key::State::RELEASED;
+    if (win->keyCallbackFunc) {
+        win->keyCallbackFunc(Key::fromGLFWKey(key), Key::fromGLFWState(action));
     }
+}
+
+void Window::resizeCallback(GLFWwindow *window, int width, int height) {
+    Window *win = (Window *)glfwGetWindowUserPointer(window);
+    if (win->resizeCallbackFunc) {
+        win->resizeCallbackFunc(width, height);
+    }
+}
+
+void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
+    Window *win = (Window *)glfwGetWindowUserPointer(window);
+    if (win->cursorCallbackFunc) {
+        win->cursorCallbackFunc(xpos, ypos);
+    }
+
+    // update cursor position
+    win->lastCursorPosition.x = xpos;
+    win->lastCursorPosition.y = ypos;
 }
 
 bool Window::isOpen() {
@@ -61,24 +86,16 @@ void Window::resize(int width, int height) {
     glfwSetWindowSize(window, width, height);
 }
 
-Key::State Window::getKeyState(Key::Action key) {
-    int glfwKey = Key::toGLFWKey(key);
-    Key::State &state = glfwKeyStates[glfwKey];
+void Window::setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback) {
+    keyCallbackFunc = callback;
+}
 
-    switch (state) {
-    case Key::State::PRESSED:
-        // Update to HELD for next time
-        state = Key::State::HELD;
-        return Key::State::PRESSED;
-    case Key::State::HELD:
-        return Key::State::HELD;
-    case Key::State::RELEASED:
-        // Update to IDLE for next time
-        state = Key::State::IDLE;
-        return Key::State::RELEASED;
-    default:
-        return Key::State::IDLE;
-    }
+void Window::setResizeCallback(std::function<void(int width, int height)> callback) {
+    resizeCallbackFunc = callback;
+}
+
+void Window::setCursorCallback(std::function<void(double xpos, double ypos)> callback) {
+    cursorCallbackFunc = callback;
 }
 
 void Window::clear() {

@@ -1,5 +1,6 @@
 # Voxels
 A project for learning voxels in OpenGL.
+Currently able to render voxels one at a time with keyboard and mouse controls.
 
 ## Install instructions
 1. Install [CMake](https://cmake.org/download) (3.15 or later)
@@ -9,7 +10,14 @@ A project for learning voxels in OpenGL.
 5. To build: `cmake --build build --config release`
 
 ## Features
+* Minimal voxel rendering (position only)
+* 2D movement
+* Camera controls
 * Hot reloadable settings in a .ini
 
 ## Planned
+* Reduced draw calls for voxels
+* Fullscreen toggle on F11
+* MSAA
+* Jumping / flying
 * Keybind settings in a .ini

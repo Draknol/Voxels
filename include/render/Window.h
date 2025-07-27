@@ -4,6 +4,9 @@
 #include <util/Color.h>
 #include <util/Key.h>
 
+#include <glm/vec2.hpp>
+
+#include <functional>
 #include <string>
 #include <map>
 
@@ -13,13 +16,22 @@ class Window {
 private:
     GLFWwindow *window;
 
-    std::map<int, Key::State> glfwKeyStates;
+    std::function<void(Key::Action key, Key::State state)> keyCallbackFunc;
+    std::function<void(int width, int height)> resizeCallbackFunc;
+    std::function<void(double xpos, double ypos)> cursorCallbackFunc;
 
     static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
+    static void resizeCallback(GLFWwindow *window, int width, int height);
+    static void cursorCallback(GLFWwindow *window, double xpos, double ypos);
+
+    glm::dvec2 lastCursorPosition;
 
 public:
     Window(int width, int height, const std::string &title);
     ~Window();
+
+    Window(const Window &) = delete;
+    Window &operator=(const Window &) = delete;
 
     /// @brief Checks if the Window is marked for closing
     bool isOpen();
@@ -36,8 +48,20 @@ public:
     /// @brief Update width and height
     void resize(int width, int height);
 
-    /// @brief Returns current state of given key (eg PRESSED)
-    Key::State getKeyState(Key::Action key);
+    /// @brief Set if cursor should be visable or hidden
+    void setCursorVisable(bool state);
+
+    /// @brief Callback for when a key is pressed
+    /// @param callback Function to call
+    void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback);
+
+    /// @brief Callback for when the window is resized
+    /// @param callback Function to call
+    void setResizeCallback(std::function<void(int width, int height)> callback);
+
+    /// @brief Callback for when the cursor is moved
+    /// @param callback function to call
+    void setCursorCallback(std::function<void(double xpos, double ypos)> callback);
 
     /// @brief Clear active Windows color buffer
     static void clear();
@@ -59,6 +83,9 @@ public:
 
     /// @brief Terminate GLFW — call once before exit
     static void terminate();
+
+    /// @brief Gets last cursor position (updated after cursor callback)
+    glm::dvec2 getLastCursorPosition() { return lastCursorPosition; }
 };
 
 #endif
