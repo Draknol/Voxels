@@ -11,6 +11,7 @@ Currently able to render voxels one at a time with keyboard and mouse controls.
 
 ## Features
 * Minimal voxel rendering (position only)
+* Batch drawing (chunks)
 * 2D movement
 * Camera controls
 * Hot reloadable settings in a .ini

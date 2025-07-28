@@ -1,5 +1,5 @@
 #include <render/Window.h>
-#include <render/Voxel.h>
+#include <render/VoxelChunk.h>
 #include <render/View.h>
 
 #include <util/Settings.h>
@@ -23,11 +23,7 @@ int main() {
     Shader voxelShader("shader/voxel.vert", "shader/voxel.frag");
     voxelShader.setActive();
 
-    // 100x100 plane of cubes
-    std::vector<Voxel> cubes;
-    for (int i = 0; i < 10000; i++) {
-        cubes.emplace_back(glm::vec3(i / 100, -2.0f, i % 100));
-    }
+    VoxelChunk chunk(0u, 0u, 0u);
 
     View view(settings.getWidth(), settings.getHeight());
 
@@ -97,6 +93,8 @@ int main() {
         view.rotate(offset.x, offset.y);
     });
 
+    chunk.buildMesh();
+
     while (window.isOpen()) {
         deltaTime = clock.reset();
         clock.updateFPS(deltaTime);
@@ -108,9 +106,7 @@ int main() {
 
         Window::clear();
 
-        for (auto &cube : cubes) {
-            cube.draw(voxelShader);
-        }
+        chunk.drawMesh(voxelShader);
 
         window.display();
     }

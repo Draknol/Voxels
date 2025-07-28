@@ -103,6 +103,14 @@ void Shader::setVec3(const std::string &name, const glm::vec3 &vector) {
     }
 }
 
+void Shader::setUVec3(const std::string &name, const glm::uvec3 &vector) {
+    try {
+        glUniform3uiv(uniformLocations.at(name), 1, &vector.x);
+    } catch (const std::exception &e) {
+        std::cout << "ERROR::SHADER::GET_UNIFORM_FAILED (" + name + ")\n";
+    }
+}
+
 void Shader::setMat4(const std::string &name, const glm::mat4 &matrix) {
     try {
         glUniformMatrix4fv(uniformLocations.at(name), 1, false, &matrix[0].x);

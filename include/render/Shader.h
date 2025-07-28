@@ -38,6 +38,9 @@ public:
     /// @brief Set a vec3 uniform (call setActive first)
     void setVec3(const std::string &name, const glm::vec3 &vector);
 
+    /// @brief Set a uvec3 uniform (call setActive first)
+    void setUVec3(const std::string &name, const glm::uvec3 &vector);
+
     /// @brief Set a mat4 uniform (call setActive first)
     void setMat4(const std::string &name, const glm::mat4 &matrix);
 };
