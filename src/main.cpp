@@ -5,32 +5,68 @@
 #include <util/Settings.h>
 #include <util/Clock.h>
 
-#include <iostream>
 #include <vector>
+
+void setupKeyCallback(Window &window, View &view, Settings &settings);
+void setupResizeCallback(Window &window, View &view);
+void setupCursorCallback(Window &window, View &view);
 
 int main() {
     Settings settings("config/settings.ini");
 
-    Window window(settings.getWidth(), settings.getHeight(), "voxels");
-    window.setActive();
-    window.setCursorVisable(false);
-
-    Window::setVsync(settings.isVSync());
+    View view(settings.getWidth(), settings.getHeight());
 
     Color skyBlue(0x8CB2FFFF);
+
+    Window window(settings.getWidth(), settings.getHeight(), "voxels");
+    window.setCursorVisable(false);
+    window.setActive();
+
+    Window::setDepthTest(true);
+    Window::setBackFaceCull(true);
     Window::setClearColor(skyBlue);
+    Window::setVsync(settings.isVSync());
+
+    // Set callbacks
+    setupKeyCallback(window, view, settings);
+    setupResizeCallback(window, view);
+    setupCursorCallback(window, view);
 
     Shader voxelShader("shader/voxel.vert", "shader/voxel.frag");
     voxelShader.setActive();
 
-    VoxelChunk chunk(0u, 0u, 0u);
+    // Add colors
+    voxelShader.setUint("colorPalette[1]", Color::Red.toHex());
+    voxelShader.setUint("colorPalette[2]", Color::Green.toHex());
+    voxelShader.setUint("colorPalette[3]", Color::Blue.toHex());
 
-    View view(settings.getWidth(), settings.getHeight());
+    VoxelChunk chunk(0u, 0u, 0u);
+    chunk.buildMesh();
 
     Clock clock;
     double deltaTime = clock.reset();
 
-    // Set callbacks
+    while (window.isOpen()) {
+        deltaTime = clock.reset();
+        clock.updateFPS(deltaTime);
+
+        Window::pollEvents();
+
+        view.update(deltaTime);
+        voxelShader.setMat4("projView", view.getProjView());
+
+        Window::clear();
+
+        chunk.drawMesh(voxelShader);
+
+        window.display();
+    }
+
+    window.terminate();
+    return 0;
+}
+
+void setupKeyCallback(Window &window, View &view, Settings &settings) {
     window.setKeyCallback([&](Key::Action key, Key::State state) {
         if (state == Key::State::PRESS) {
             switch (key) {
@@ -77,12 +113,16 @@ int main() {
             }
         }
     });
+}
 
+void setupResizeCallback(Window &window, View &view) {
     window.setResizeCallback([&](int width, int height) {
         window.resize(width, height);
         view.resizeViewport(width, height);
     });
+}
 
+void setupCursorCallback(Window &window, View &view) {
     window.setCursorCallback([&](double xpos, double ypos) {
         glm::dvec2 offset = glm::dvec2(xpos, ypos) - window.getLastCursorPosition();
         offset.y *= -1;
@@ -92,25 +132,4 @@ int main() {
 
         view.rotate(offset.x, offset.y);
     });
-
-    chunk.buildMesh();
-
-    while (window.isOpen()) {
-        deltaTime = clock.reset();
-        clock.updateFPS(deltaTime);
-
-        Window::pollEvents();
-
-        view.update(deltaTime);
-        voxelShader.setMat4("projView", view.getProjView());
-
-        Window::clear();
-
-        chunk.drawMesh(voxelShader);
-
-        window.display();
-    }
-
-    window.terminate();
-    return 0;
 }

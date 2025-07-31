@@ -99,7 +99,7 @@ void Window::setCursorCallback(std::function<void(double xpos, double ypos)> cal
 }
 
 void Window::clear() {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::setVsync(bool isVsync) {
@@ -116,6 +116,46 @@ void Window::setClearColor(const Color &color) {
 
 void Window::setClearColor(uint32_t rgba) {
     setClearColor(Color(rgba));
+}
+
+void Window::setDepthTest(bool state) {
+    if (state) {
+        glEnable(GL_DEPTH_TEST);
+    } else {
+        glDisable(GL_DEPTH_TEST);
+    }
+}
+
+void Window::setBackFaceCull(bool state) {
+    GLint currentState;
+    glGetIntegerv(GL_CULL_FACE_MODE, &currentState);
+
+    if (state) {
+        glEnable(GL_CULL_FACE);
+        glCullFace((currentState == GL_FRONT) ? GL_FRONT_AND_BACK : GL_BACK);
+    } else {
+        if (currentState == GL_FRONT_AND_BACK) {
+            glCullFace(GL_FRONT);
+        } else if (currentState == GL_BACK) {
+            glDisable(GL_CULL_FACE);
+        }
+    }
+}
+
+void Window::setFrontFaceCull(bool state) {
+    GLint currentState;
+    glGetIntegerv(GL_CULL_FACE_MODE, &currentState);
+
+    if (state) {
+        glEnable(GL_CULL_FACE);
+        glCullFace((currentState == GL_BACK) ? GL_FRONT_AND_BACK : GL_FRONT);
+    } else {
+        if (currentState == GL_FRONT_AND_BACK) {
+            glCullFace(GL_BACK);
+        } else if (currentState == GL_FRONT) {
+            glDisable(GL_CULL_FACE);
+        }
+    }
 }
 
 void Window::pollEvents() {

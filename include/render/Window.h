@@ -78,6 +78,17 @@ public:
     /// @brief Set active Windows clear color using 0xRRGGBBAA hex
     static void setClearColor(uint32_t rgba);
 
+    /// @brief Set active Windows depth testing to on or off
+    static void setDepthTest(bool state);
+
+    /// @brief Set active Windows back face culling to on or off.
+    /// @brief Works with setFrontFaceCull;
+    static void setBackFaceCull(bool state);
+
+    /// @brief Set active Windows front face culling to on or off.
+    /// @brief Works with setBackFaceCull;
+    static void setFrontFaceCull(bool state);
+
     /// @brief Poll active Windows events
     static void pollEvents();
 

@@ -3,6 +3,7 @@
 
 #include <glm/vec3.hpp>
 
+#include <render/VoxelVertex.h>
 #include <render/Shader.h>
 
 #include <vector>
@@ -23,29 +24,28 @@ private:
     size_t vertCount = 0;
 
     static constexpr glm::u8vec3 cubeVerts[8] = {
-        {1u, 1u, 1u},
-        {1u, 1u, 0u},
-        {1u, 0u, 1u},
-        {1u, 0u, 0u},
-        {0u, 1u, 1u},
-        {0u, 1u, 0u},
-        {0u, 0u, 1u},
         {0u, 0u, 0u},
+        {0u, 0u, 1u},
+        {0u, 1u, 0u},
+        {0u, 1u, 1u},
+        {1u, 0u, 0u},
+        {1u, 0u, 1u},
+        {1u, 1u, 0u},
+        {1u, 1u, 1u},
     };
-
     static constexpr uint32_t faceIndices[6][6] = {
-        {1u, 5u, 4u, 1u, 4u, 0u},
-        {2u, 0u, 4u, 2u, 4u, 6u},
-        {6u, 4u, 5u, 6u, 5u, 3u},
-        {7u, 3u, 2u, 7u, 2u, 6u},
-        {3u, 1u, 0u, 3u, 0u, 2u},
-        {7u, 5u, 1u, 7u, 1u, 3u},
+        {0b011u, 0b010u, 0b001u, 0b000u, 0b001u, 0b010u}, // -X
+        {0b101u, 0b110u, 0b111u, 0b110u, 0b101u, 0b100u}, // +X
+        {0b001u, 0b100u, 0b101u, 0b100u, 0b001u, 0b000u}, // -Y
+        {0b111u, 0b110u, 0b011u, 0b010u, 0b011u, 0b110u}, // +Y
+        {0b100u, 0b010u, 0b110u, 0b010u, 0b100u, 0b000u}, // -Z
+        {0b111u, 0b011u, 0b101u, 0b001u, 0b101u, 0b011u}, // +Z
     };
 
     /// @brief Updates the VBO with new vertices.
     /// @brief Grows the VBO if needed.
     /// @param vertices
-    void updateMesh(const std::vector<glm::u8vec3> &vertices);
+    void updateMesh(const std::vector<VoxelVertex> &vertices);
 
     /// @brief Rounds size up to a power of 2
     size_t ceilPow2(size_t size);

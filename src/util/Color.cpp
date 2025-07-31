@@ -3,6 +3,9 @@
 constexpr Color Color::Red = Color(1.0f, 0.0f, 0.0f, 1.0f);
 constexpr Color Color::Green = Color(0.0f, 1.0f, 0.0f, 1.0f);
 constexpr Color Color::Blue = Color(0.0f, 0.0f, 1.0f, 1.0f);
+constexpr Color Color::Yellow = Color(1.0f, 1.0f, 0.0f, 1.0f);
+constexpr Color Color::Teal = Color(0.0f, 1.0f, 1.0f, 1.0f);
+constexpr Color Color::Purple = Color(1.0f, 0.0f, 1.0f, 1.0f);
 constexpr Color Color::Black = Color(0.0f, 0.0f, 0.0f, 1.0f);
 constexpr Color Color::White = Color(1.0f, 1.0f, 1.0f, 1.0f);
 

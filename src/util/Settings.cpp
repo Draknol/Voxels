@@ -35,6 +35,6 @@ void Settings::reload() {
     vSync = reader.GetBoolean("Window", "vSync", true);
 }
 
-const std::string &Settings::boolToOnOff(bool value) {
+std::string Settings::boolToOnOff(bool value) {
     return value ? "on" : "off";
 }

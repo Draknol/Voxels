@@ -95,6 +95,14 @@ void Shader::setActive() const {
     glUseProgram(ID);
 }
 
+void Shader::setUint(const std::string &name, uint32_t n) {
+    try {
+        glUniform1ui(uniformLocations.at(name), n);
+    } catch (const std::exception &e) {
+        std::cout << "ERROR::SHADER::GET_UNIFORM_FAILED (" + name + ")\n";
+    }
+}
+
 void Shader::setVec3(const std::string &name, const glm::vec3 &vector) {
     try {
         glUniform3fv(uniformLocations.at(name), 1, &vector.x);

@@ -10,11 +10,11 @@ VoxelChunk::VoxelChunk(const glm::uvec3 &chunkPosition)
 
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glVertexAttribIPointer(0, 3, GL_UNSIGNED_BYTE, sizeof(glm::u8vec3), (void *)0);
+    glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, sizeof(VoxelVertex), (void *)0);
     glEnableVertexAttribArray(0);
 
     for (size_t i = 0; i < MAX_CHUNK_SIZE; i++) {
-        chunk[i] = 1u;
+        chunk[i] = rand() % 3 + 1;
     }
 
     // Sphere code
@@ -24,7 +24,7 @@ VoxelChunk::VoxelChunk(const glm::uvec3 &chunkPosition)
     //         for (size_t x = 0; x < CHUNK_SIZE; x++) {
     //             glm::vec3 voxelPos(x, y, z);
     //             if (glm::distance(voxelPos, centrePoint) < CHUNK_SIZE / 2.0f) {
-    //                 setVoxel(x, y, z, 1u);
+    //                 setVoxel(x, y, z, rand() % 8 + 1);
     //             } else {
     //                 setVoxel(x, y, z, 0u);
     //             }
@@ -46,13 +46,14 @@ VoxelChunk::~VoxelChunk() {
 }
 
 void VoxelChunk::buildMesh() {
-    std::vector<glm::u8vec3> vertices;
+    std::vector<VoxelVertex> vertices;
 
     for (size_t z = 0; z < CHUNK_SIZE; z++) {
         for (size_t y = 0; y < CHUNK_SIZE; y++) {
             for (size_t x = 0; x < CHUNK_SIZE; x++) {
                 // Skip if there is no voxel
-                if (getVoxel(x, y, z) == 0u) {
+                uint8_t color = getVoxel(x, y, z);
+                if (color == 0u) {
                     continue;
                 }
 
@@ -61,7 +62,7 @@ void VoxelChunk::buildMesh() {
                     for (size_t e = 0; e < 6u; e++) {
                         glm::u8vec3 offset(x, y, z);
                         const glm::u8vec3 &vert = cubeVerts[faceIndices[f][e]];
-                        vertices.emplace_back(vert + offset);
+                        vertices.emplace_back(vert + offset, color);
                     }
                 }
             }
@@ -71,7 +72,7 @@ void VoxelChunk::buildMesh() {
     updateMesh(vertices);
 }
 
-void VoxelChunk::updateMesh(const std::vector<glm::u8vec3> &verts) {
+void VoxelChunk::updateMesh(const std::vector<VoxelVertex> &verts) {
     vertCount = verts.size();
 
     glBindVertexArray(vao);
@@ -80,11 +81,11 @@ void VoxelChunk::updateMesh(const std::vector<glm::u8vec3> &verts) {
     // Grow VBO if needed
     if (vertCount > vboCapacity) {
         vboCapacity = std::min(ceilPow2(vertCount), MAX_CHUNK_VERTS);
-        glBufferData(GL_ARRAY_BUFFER, vboCapacity * sizeof(glm::u8vec3), nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vboCapacity * sizeof(VoxelVertex), nullptr, GL_DYNAMIC_DRAW);
     }
 
     // Update VBO
-    glBufferSubData(GL_ARRAY_BUFFER, 0, vertCount * sizeof(glm::u8vec3), verts.data());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertCount * sizeof(VoxelVertex), verts.data());
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

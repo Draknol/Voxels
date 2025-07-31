@@ -35,6 +35,9 @@ public:
     /// @brief Tells OpenGL to use this shader
     void setActive() const;
 
+    /// @brief Set a uint uniform (call setActive first)
+    void setUint(const std::string &name, uint32_t n);
+
     /// @brief Set a vec3 uniform (call setActive first)
     void setVec3(const std::string &name, const glm::vec3 &vector);
 

@@ -13,7 +13,7 @@ private:
     int height;
     bool vSync;
 
-    const std::string &boolToOnOff(bool value);
+    std::string boolToOnOff(bool value);
 
 public:
     Settings(const std::string &path);
