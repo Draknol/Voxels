@@ -4,6 +4,9 @@
 
 #include <iostream>
 
+Window::Window(const glm::ivec2 &size, const std::string &title)
+    : Window(size.x, size.y, title) {}
+
 Window::Window(int width, int height, const std::string &title) {
     if (glfwInit() == GL_FALSE) {
         std::cerr << "ERROR::WINDOW::GLFW_INIT_FAILED\n";
@@ -84,6 +87,10 @@ void Window::setActive() {
 
 void Window::resize(int width, int height) {
     glfwSetWindowSize(window, width, height);
+}
+
+void Window::resize(const glm::ivec2 &size) {
+    glfwSetWindowSize(window, size.x, size.y);
 }
 
 void Window::setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback) {

@@ -5,29 +5,34 @@
 
 #include <algorithm>
 
-View::View(float width, float height)
+View::View(const glm::vec2 &size, float fov)
+    : View(size.x, size.y, fov) {}
+
+View::View(float width, float height, float fov)
     : yaw(glm::radians(-90.0f)), pitch(glm::radians(0.0f)) {
     update();
-    resizeViewport(width, height);
+    updateViewport(width, height, fov);
 }
 
-void View::resizeViewport(float width, float height) {
+void View::updateViewport(float width, float height, float fov) {
     glViewport(0, 0, width, height);
     projMatrix = glm::perspective(glm::radians(fov), width / height, 0.1f, 100.0f);
     projViewMatrix = projMatrix * viewMatrix;
 }
 
-void View::update(float deltaTime) {
-    float forwardInput = static_cast<float>(movingForward - movingBackward);
-    float strafeInput = static_cast<float>(movingLeft - movingRight);
+void View::updateViewport(const glm::ivec2 &size, float fov) {
+    updateViewport(size.x, size.y, fov);
+}
 
-    if (forwardInput || strafeInput) {
-        glm::vec3 moveDirection;
-        moveDirection.x = cos(yaw) * forwardInput + sin(yaw) * strafeInput;
-        moveDirection.y = 0.0f;
-        moveDirection.z = sin(yaw) * forwardInput - cos(yaw) * strafeInput;
+void View::update(const glm::ivec2 &moveDirection, float distance) {
 
-        position += glm::normalize(moveDirection) * cameraSpeed * deltaTime;
+    if (moveDirection != glm::ivec2(0)) {
+        glm::vec3 moveVector;
+        moveVector.x = cos(yaw) * moveDirection.y - sin(yaw) * moveDirection.x;
+        moveVector.y = 0.0f;
+        moveVector.z = sin(yaw) * moveDirection.y + cos(yaw) * moveDirection.x;
+
+        position += glm::normalize(moveVector) * distance;
     }
 
     glm::vec3 lookDirection;

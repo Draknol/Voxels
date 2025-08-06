@@ -14,10 +14,12 @@ void Settings::save() {
     std::ofstream file(path);
 
     // Window
-    file << "[Window]\n"
-         << "width = " << width << "\n"
-         << "height = " << height << "\n"
-         << "vSync = " << boolToOnOff(vSync) << "\n";
+    file << "[Graphics]\n"
+         << "width = " << size.x << "\n"
+         << "height = " << size.y << "\n"
+         << "fov = " << fov << "\n"
+         << "vSync = " << boolToOnOff(vSync) << "\n"
+         << "printFPS = " << boolToOnOff(printFPS) << "\n";
 
     file.close();
 }
@@ -30,9 +32,11 @@ void Settings::reload() {
     }
 
     // Window (default 800x800, VSync)
-    width = reader.GetInteger("Window", "width", 800);
-    height = reader.GetInteger("Window", "height", 800);
-    vSync = reader.GetBoolean("Window", "vSync", true);
+    size.x = reader.GetInteger("Graphics", "width", 800);
+    size.y = reader.GetInteger("Graphics", "height", 800);
+    fov = reader.GetReal("Graphics", "fov", 90.0);
+    vSync = reader.GetBoolean("Graphics", "vSync", true);
+    printFPS = reader.GetBoolean("Graphics", "printFPS", false);
 }
 
 std::string Settings::boolToOnOff(bool value) {

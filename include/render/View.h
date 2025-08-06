@@ -3,7 +3,6 @@
 
 #include <glm/mat4x4.hpp>
 
-/// @brief Acts as a camera, with a view, aspect ratio and projection
 class View {
 private:
     glm::mat4 projMatrix;
@@ -16,33 +15,19 @@ private:
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
     constexpr static glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-    float cameraSpeed = 16.0f;
-    float fov = 90.0f;
-
-    bool movingForward = false;
-    bool movingLeft = false;
-    bool movingBackward = false;
-    bool movingRight = false;
-
 public:
-    /// @brief Create a view
-    /// @param width Width of the window
-    /// @param height Height of the window
-    View(float width, float height);
+    View(float width, float height, float fov);
+    View(const glm::vec2 &size, float fov);
 
-    void resizeViewport(float width, float height);
+    void updateViewport(float width, float height, float fov);
+    void updateViewport(const glm::ivec2 &size, float fov);
 
-    void update(float deltaTime = 0.0f);
+    void update(const glm::ivec2 &moveDirection = glm::ivec2(0), float distance = 0.0f);
 
     void rotate(float yawOffset, float pitchOffset);
 
     const glm::mat4 &getProjView() { return projViewMatrix; }
     const glm::vec3 &getPosition() { return position; }
-
-    void setMovingForward(bool state) { movingForward = state; }
-    void setMovingLeft(bool state) { movingLeft = state; }
-    void setMovingBackward(bool state) { movingBackward = state; }
-    void setMovingRight(bool state) { movingRight = state; }
 };
 
 #endif

@@ -2,6 +2,9 @@
 
 #include <gl/glew.h>
 
+VoxelChunk::VoxelChunk(uint32_t x, uint32_t y, uint32_t z)
+    : VoxelChunk(glm::uvec3(x, y, z)) {}
+
 VoxelChunk::VoxelChunk(const glm::uvec3 &chunkPosition)
     : chunkOffset(static_cast<uint32_t>(CHUNK_SIZE) * chunkPosition) {
 
@@ -13,18 +16,19 @@ VoxelChunk::VoxelChunk(const glm::uvec3 &chunkPosition)
     glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, sizeof(VoxelVertex), (void *)0);
     glEnableVertexAttribArray(0);
 
+    // Solid cube
     for (size_t i = 0; i < MAX_CHUNK_SIZE; i++) {
         chunk[i] = rand() % 3 + 1;
     }
 
-    // Sphere code
+    // Sphere
     // glm::vec3 centrePoint(CHUNK_SIZE / 2.0f);
     // for (size_t z = 0; z < CHUNK_SIZE; z++) {
     //     for (size_t y = 0; y < CHUNK_SIZE; y++) {
     //         for (size_t x = 0; x < CHUNK_SIZE; x++) {
     //             glm::vec3 voxelPos(x, y, z);
     //             if (glm::distance(voxelPos, centrePoint) < CHUNK_SIZE / 2.0f) {
-    //                 setVoxel(x, y, z, rand() % 8 + 1);
+    //                 setVoxel(x, y, z, rand() % 3 + 1);
     //             } else {
     //                 setVoxel(x, y, z, 0u);
     //             }
@@ -36,11 +40,8 @@ VoxelChunk::VoxelChunk(const glm::uvec3 &chunkPosition)
     glBindVertexArray(0);
 }
 
-VoxelChunk::VoxelChunk(uint32_t x, uint32_t y, uint32_t z)
-    : VoxelChunk(glm::uvec3(x, y, z)) {}
-
 VoxelChunk::~VoxelChunk() {
-    delete[] chunk;
+    delete chunk;
     glDeleteBuffers(1, &vbo);
     glDeleteVertexArrays(1, &vao);
 }
@@ -91,7 +92,7 @@ void VoxelChunk::updateMesh(const std::vector<VoxelVertex> &verts) {
     glBindVertexArray(0);
 }
 
-void VoxelChunk::drawMesh(Shader &shader) {
+void VoxelChunk::drawMesh(Shader &shader) const {
 
     shader.setUVec3("chunkOffset", chunkOffset);
 
@@ -104,7 +105,7 @@ void VoxelChunk::drawMesh(Shader &shader) {
     glBindVertexArray(0);
 }
 
-size_t VoxelChunk::ceilPow2(size_t size) {
+size_t VoxelChunk::ceilPow2(size_t size) const {
     size_t power = 1u;
 
     while (power < size) {
@@ -118,6 +119,6 @@ void VoxelChunk::setVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val) {
     chunk[x + CHUNK_SIZE * y + CHUNK_SIZE * CHUNK_SIZE * z] = val;
 }
 
-uint8_t VoxelChunk::getVoxel(uint8_t x, uint8_t y, uint8_t z) {
+uint8_t VoxelChunk::getVoxel(uint8_t x, uint8_t y, uint8_t z) const {
     return chunk[x + CHUNK_SIZE * y + CHUNK_SIZE * CHUNK_SIZE * z];
 }

@@ -33,6 +33,7 @@ private:
         {1u, 1u, 0u},
         {1u, 1u, 1u},
     };
+
     static constexpr uint32_t faceIndices[6][6] = {
         {0b011u, 0b010u, 0b001u, 0b000u, 0b001u, 0b010u}, // -X
         {0b101u, 0b110u, 0b111u, 0b110u, 0b101u, 0b100u}, // +X
@@ -42,35 +43,22 @@ private:
         {0b111u, 0b011u, 0b101u, 0b001u, 0b101u, 0b011u}, // +Z
     };
 
-    /// @brief Updates the VBO with new vertices.
-    /// @brief Grows the VBO if needed.
-    /// @param vertices
     void updateMesh(const std::vector<VoxelVertex> &vertices);
 
-    /// @brief Rounds size up to a power of 2
-    size_t ceilPow2(size_t size);
+    // Rounds size up to a power of 2
+    size_t ceilPow2(size_t size) const;
 
     void setVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val);
-    uint8_t getVoxel(uint8_t x, uint8_t y, uint8_t z);
+    uint8_t getVoxel(uint8_t x, uint8_t y, uint8_t z) const;
 
 public:
-    /// @brief Creates a chunk of voxels
-    /// @param chunkPosition Position on chunk sized grid
+    VoxelChunk(uint32_t x, uint32_t y, uint32_t z);
     VoxelChunk(const glm::uvec3 &chunkPosition);
     ~VoxelChunk();
 
-    /// @brief Creates a chunk of voxels
-    /// @param x x position on chunk sized grid
-    /// @param z y position on chunk sized grid
-    /// @param y z position on chunk sized grid
-    VoxelChunk(uint32_t x, uint32_t y, uint32_t z);
-
-    /// @brief Build voxel array into a single mesh and updates the GPU
     void buildMesh();
 
-    /// @brief Draw build mesh to the active window
-    /// @param shader Shader to render with
-    void drawMesh(Shader &shader);
+    void drawMesh(Shader &shader) const;
 };
 
 #endif
