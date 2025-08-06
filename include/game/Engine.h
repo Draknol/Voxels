@@ -21,7 +21,7 @@ public:
     ~Engine();
 
     // Renders a frame to the screen
-    void render(const World &world, Shader &voxelShader);
+    void render(const World &world, const Shader &voxelShader);
 
     // Checks if the engine should continue running
     bool isRunning();

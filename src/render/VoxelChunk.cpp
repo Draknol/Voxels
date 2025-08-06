@@ -52,20 +52,9 @@ void VoxelChunk::buildMesh() {
     for (size_t z = 0; z < CHUNK_SIZE; z++) {
         for (size_t y = 0; y < CHUNK_SIZE; y++) {
             for (size_t x = 0; x < CHUNK_SIZE; x++) {
-                // Skip if there is no voxel
-                uint8_t color = getVoxel(x, y, z);
-                if (color == 0u) {
-                    continue;
-                }
 
                 // Add voxels vertices
-                for (size_t f = 0; f < 6u; ++f) {
-                    for (size_t e = 0; e < 6u; e++) {
-                        glm::u8vec3 offset(x, y, z);
-                        const glm::u8vec3 &vert = cubeVerts[faceIndices[f][e]];
-                        vertices.emplace_back(vert + offset, color);
-                    }
-                }
+                appendCulledVoxel(vertices, x, y, z);
             }
         }
     }
@@ -92,7 +81,7 @@ void VoxelChunk::updateMesh(const std::vector<VoxelVertex> &verts) {
     glBindVertexArray(0);
 }
 
-void VoxelChunk::drawMesh(Shader &shader) const {
+void VoxelChunk::drawMesh(const Shader &shader) const {
 
     shader.setUVec3("chunkOffset", chunkOffset);
 
@@ -121,4 +110,60 @@ void VoxelChunk::setVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val) {
 
 uint8_t VoxelChunk::getVoxel(uint8_t x, uint8_t y, uint8_t z) const {
     return chunk[x + CHUNK_SIZE * y + CHUNK_SIZE * CHUNK_SIZE * z];
+}
+void VoxelChunk::appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x, uint8_t y, uint8_t z) const {
+
+    // Skip if there is no voxel
+    uint8_t color = getVoxel(x, y, z);
+    if (color == 0u) {
+        return;
+    }
+
+    if (x == 0 || !getVoxel(x - 1u, y, z)) {
+        for (size_t e = 0; e < 6u; e++) {
+            glm::u8vec3 offset(x, y, z);
+            const glm::u8vec3 &vert = cubeVerts[faceIndices[Left][e]];
+            vertices.emplace_back(vert + offset, color);
+        }
+    }
+
+    if (x == CHUNK_SIZE - 1 || !getVoxel(x + 1u, y, z)) {
+        for (size_t e = 0; e < 6u; e++) {
+            glm::u8vec3 offset(x, y, z);
+            const glm::u8vec3 &vert = cubeVerts[faceIndices[Right][e]];
+            vertices.emplace_back(vert + offset, color);
+        }
+    }
+
+    if (y == 0 || !getVoxel(x, y - 1u, z)) {
+        for (size_t e = 0; e < 6u; e++) {
+            glm::u8vec3 offset(x, y, z);
+            const glm::u8vec3 &vert = cubeVerts[faceIndices[Back][e]];
+            vertices.emplace_back(vert + offset, color);
+        }
+    }
+
+    if (y == CHUNK_SIZE - 1 || !getVoxel(x, y + 1u, z)) {
+        for (size_t e = 0; e < 6u; e++) {
+            glm::u8vec3 offset(x, y, z);
+            const glm::u8vec3 &vert = cubeVerts[faceIndices[Front][e]];
+            vertices.emplace_back(vert + offset, color);
+        }
+    }
+
+    if (z == 0 || !getVoxel(x, y, z - 1u)) {
+        for (size_t e = 0; e < 6u; e++) {
+            glm::u8vec3 offset(x, y, z);
+            const glm::u8vec3 &vert = cubeVerts[faceIndices[Bottom][e]];
+            vertices.emplace_back(vert + offset, color);
+        }
+    }
+
+    if (z == CHUNK_SIZE - 1 || !getVoxel(x, y, z + 1u)) {
+        for (size_t e = 0; e < 6u; e++) {
+            glm::u8vec3 offset(x, y, z);
+            const glm::u8vec3 &vert = cubeVerts[faceIndices[Top][e]];
+            vertices.emplace_back(vert + offset, color);
+        }
+    }
 }

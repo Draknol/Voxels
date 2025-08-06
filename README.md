@@ -14,13 +14,13 @@ Currently able to render voxels one at a time with keyboard and mouse controls.
 * Batch drawing (chunks)
 * Color palettes
 * Depth testing
-* Face culling
+* Back face culling
+* Interior face culling
 * 2D movement
 * Camera controls
 * Hot reloadable settings in a .ini
 
 ## Planned
-* Reduced draw calls for voxels
 * Fullscreen toggle on F11
 * MSAA
 * Jumping / flying

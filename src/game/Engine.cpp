@@ -23,7 +23,7 @@ Engine::~Engine() {
     window.terminate();
 }
 
-void Engine::render(const World &world, Shader &voxelShader) {
+void Engine::render(const World &world, const Shader &voxelShader) {
     setWindowActive();
 
     Window::pollEvents();

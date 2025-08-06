@@ -36,16 +36,16 @@ public:
     void setActive() const;
 
     /// @brief Set a uint uniform (call setActive first)
-    void setUint(const std::string &name, uint32_t n);
+    void setUint(const std::string &name, uint32_t n) const;
 
     /// @brief Set a vec3 uniform (call setActive first)
-    void setVec3(const std::string &name, const glm::vec3 &vector);
+    void setVec3(const std::string &name, const glm::vec3 &vector) const;
 
     /// @brief Set a uvec3 uniform (call setActive first)
-    void setUVec3(const std::string &name, const glm::uvec3 &vector);
+    void setUVec3(const std::string &name, const glm::uvec3 &vector) const;
 
     /// @brief Set a mat4 uniform (call setActive first)
-    void setMat4(const std::string &name, const glm::mat4 &matrix);
+    void setMat4(const std::string &name, const glm::mat4 &matrix) const;
 };
 
 #endif

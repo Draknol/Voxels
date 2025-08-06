@@ -95,7 +95,7 @@ void Shader::setActive() const {
     glUseProgram(ID);
 }
 
-void Shader::setUint(const std::string &name, uint32_t n) {
+void Shader::setUint(const std::string &name, uint32_t n) const {
     try {
         glUniform1ui(uniformLocations.at(name), n);
     } catch (const std::exception &e) {
@@ -103,7 +103,7 @@ void Shader::setUint(const std::string &name, uint32_t n) {
     }
 }
 
-void Shader::setVec3(const std::string &name, const glm::vec3 &vector) {
+void Shader::setVec3(const std::string &name, const glm::vec3 &vector) const {
     try {
         glUniform3fv(uniformLocations.at(name), 1, &vector.x);
     } catch (const std::exception &e) {
@@ -111,7 +111,7 @@ void Shader::setVec3(const std::string &name, const glm::vec3 &vector) {
     }
 }
 
-void Shader::setUVec3(const std::string &name, const glm::uvec3 &vector) {
+void Shader::setUVec3(const std::string &name, const glm::uvec3 &vector) const {
     try {
         glUniform3uiv(uniformLocations.at(name), 1, &vector.x);
     } catch (const std::exception &e) {
@@ -119,7 +119,7 @@ void Shader::setUVec3(const std::string &name, const glm::uvec3 &vector) {
     }
 }
 
-void Shader::setMat4(const std::string &name, const glm::mat4 &matrix) {
+void Shader::setMat4(const std::string &name, const glm::mat4 &matrix) const {
     try {
         glUniformMatrix4fv(uniformLocations.at(name), 1, false, &matrix[0].x);
     } catch (const std::exception &e) {

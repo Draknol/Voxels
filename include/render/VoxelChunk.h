@@ -34,13 +34,22 @@ private:
         {1u, 1u, 1u},
     };
 
+    enum Face {
+        Left,   // -X
+        Right,  // +X
+        Back,   // -Y
+        Front,  // +Y
+        Bottom, // -Z
+        Top     // +Z
+    };
+
     static constexpr uint32_t faceIndices[6][6] = {
-        {0b011u, 0b010u, 0b001u, 0b000u, 0b001u, 0b010u}, // -X
-        {0b101u, 0b110u, 0b111u, 0b110u, 0b101u, 0b100u}, // +X
-        {0b001u, 0b100u, 0b101u, 0b100u, 0b001u, 0b000u}, // -Y
-        {0b111u, 0b110u, 0b011u, 0b010u, 0b011u, 0b110u}, // +Y
-        {0b100u, 0b010u, 0b110u, 0b010u, 0b100u, 0b000u}, // -Z
-        {0b111u, 0b011u, 0b101u, 0b001u, 0b101u, 0b011u}, // +Z
+        {0b011u, 0b010u, 0b001u, 0b000u, 0b001u, 0b010u}, // Left
+        {0b101u, 0b110u, 0b111u, 0b110u, 0b101u, 0b100u}, // Right
+        {0b001u, 0b100u, 0b101u, 0b100u, 0b001u, 0b000u}, // Back
+        {0b111u, 0b110u, 0b011u, 0b010u, 0b011u, 0b110u}, // Front
+        {0b100u, 0b010u, 0b110u, 0b010u, 0b100u, 0b000u}, // Bottom
+        {0b111u, 0b011u, 0b101u, 0b001u, 0b101u, 0b011u}, // Top
     };
 
     void updateMesh(const std::vector<VoxelVertex> &vertices);
@@ -51,6 +60,8 @@ private:
     void setVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val);
     uint8_t getVoxel(uint8_t x, uint8_t y, uint8_t z) const;
 
+    void appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x, uint8_t y, uint8_t z) const;
+
 public:
     VoxelChunk(uint32_t x, uint32_t y, uint32_t z);
     VoxelChunk(const glm::uvec3 &chunkPosition);
@@ -58,7 +69,7 @@ public:
 
     void buildMesh();
 
-    void drawMesh(Shader &shader) const;
+    void drawMesh(const Shader &shader) const;
 };
 
 #endif
