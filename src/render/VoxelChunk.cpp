@@ -18,7 +18,7 @@ VoxelChunk::VoxelChunk(const glm::uvec3 &chunkPosition)
 
     // Solid cube
     for (size_t i = 0; i < MAX_CHUNK_SIZE; i++) {
-        chunk[i] = rand() % 3 + 1;
+        chunk[i] = rand() % 15 + 1;
     }
 
     // Sphere

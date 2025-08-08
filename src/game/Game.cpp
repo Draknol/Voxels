@@ -4,18 +4,20 @@
 
 #include <glfw/glfw3.h>
 
-Game::Game(const std::string &title, const std::string &settingsPath)
-    : settings(std::make_shared<Settings>(settingsPath)), engine(title, settings), player(settings), voxelShader("shader/voxel.vert", "shader/voxel.frag") {
+Game::Game(const std::string &title, const std::string &settingsPath, const std::string &colorPalletePath)
+    : settings(std::make_shared<Settings>(settingsPath)),
+      colorPalette(colorPalletePath),
+      engine(title, settings),
+      player(settings),
+      voxelShader("shader/voxel.vert", "shader/voxel.frag") {
 
-    Input::setupKeyCallback(engine, player, settings);
+    Input::setupKeyCallback(this, engine, player, settings);
     Input::setupResizeCallback(engine, player);
     Input::setupCursorCallback(engine, player);
 
     voxelShader.setActive();
 
-    voxelShader.setUint("colorPalette[1]", Color::Red.toHex());
-    voxelShader.setUint("colorPalette[2]", Color::Green.toHex());
-    voxelShader.setUint("colorPalette[3]", Color::Blue.toHex());
+    voxelShader.setColorPalette("colorPalette", colorPalette);
 
     world.addVoxelChunk(0u, 0u, 0u);
 
@@ -40,4 +42,14 @@ void Game::render() {
 
 bool Game::isRunning() {
     return engine.isRunning();
+}
+
+void Game::updateFromSettings(std::shared_ptr<Settings> settings) {
+    colorPalette.reload();
+    printFPS = settings->isPrintFPS();
+    engine.resize(settings->getSize());
+    engine.setVSync(settings->isVSync());
+    player.resizeView(settings->getSize(), settings->getFOV());
+    player.setSensitivity(settings->getSensitivity());
+    voxelShader.setColorPalette("colorPalette", colorPalette);
 }

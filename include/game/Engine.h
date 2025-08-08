@@ -39,6 +39,8 @@ public:
     void setResizeCallback(std::function<void(int width, int height)> callback);
     void setCursorCallback(std::function<void(double xpos, double ypos)> callback);
 
+    void setVSync(bool state);
+
     // Sets the clear color of the window
     void setSkyColor(const Color &color);
 };

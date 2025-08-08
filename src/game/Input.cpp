@@ -1,7 +1,9 @@
 #include <game/Input.h>
 
-void Input::setupKeyCallback(Engine &engine, Player &player, std::shared_ptr<Settings> settings) {
-    engine.setKeyCallback([&](Key::Action key, Key::State state) {
+#include <iostream>
+
+void Input::setupKeyCallback(Game *game, Engine &engine, Player &player, std::shared_ptr<Settings> settings) {
+    engine.setKeyCallback([&, game, settings](Key::Action key, Key::State state) {
         // Ignore repeats
         if (state == Key::State::REPEAT) {
             return;
@@ -13,6 +15,7 @@ void Input::setupKeyCallback(Engine &engine, Player &player, std::shared_ptr<Set
         case Key::HOT_RELOAD:
             if (pressed) {
                 settings->reload();
+                game->updateFromSettings(settings);
             }
             break;
         case Key::EXIT:
@@ -50,8 +53,7 @@ void Input::setupCursorCallback(Engine &engine, Player &player) {
         glm::dvec2 cursorDelta = engine.getCursorDelta(xpos, ypos);
         cursorDelta.y *= -1;
 
-        double sensitivity = 0.15f;
-        cursorDelta *= sensitivity;
+        cursorDelta *= player.getSensitivity();
 
         player.rotateView(cursorDelta.x, cursorDelta.y);
     });

@@ -11,7 +11,8 @@ private:
     View view;
 
     float moveSpeed = 16.0f;
-    float fov = 90.0f;
+    float fov;
+    float sensitivity;
 
     glm::ivec2 moveDirection = {0, 0};
 
@@ -21,7 +22,9 @@ public:
     void update(float deltaTime);
 
     void resizeView(int width, int height);
+    void resizeView(int width, int height, float fov);
     void resizeView(const glm::ivec2 &size);
+    void resizeView(const glm::ivec2 &size, float fov);
 
     void rotateView(float yawOffset, float pitchOffset);
 
@@ -30,7 +33,10 @@ public:
     void setMovingBackward(bool state);
     void setMovingRight(bool state);
 
+    void setSensitivity(float multiplier);
+
     const glm::mat4 &getProjView();
+    float getSensitivity() const;
 };
 
 #endif

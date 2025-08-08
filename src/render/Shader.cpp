@@ -10,8 +10,8 @@
 Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath) {
     glewInit();
 
-    GLuint vertex = loadShader(vertexPath, GL_VERTEX_SHADER);
-    GLuint fragment = loadShader(fragmentPath, GL_FRAGMENT_SHADER);
+    uint32_t vertex = loadShader(vertexPath, GL_VERTEX_SHADER);
+    uint32_t fragment = loadShader(fragmentPath, GL_FRAGMENT_SHADER);
 
     // Create shader program
     ID = glCreateProgram();
@@ -59,7 +59,7 @@ Shader::~Shader() {
     glDeleteProgram(ID);
 }
 
-GLuint Shader::loadShader(const std::string &fileName, int shaderType) {
+uint32_t Shader::loadShader(const std::string &fileName, int shaderType) {
     std::ifstream file(fileName);
 
     // Check if file failed to open
@@ -73,7 +73,7 @@ GLuint Shader::loadShader(const std::string &fileName, int shaderType) {
     std::string strBuffer = ssBuffer.str();
     const char *code = strBuffer.c_str();
 
-    GLuint shader = glCreateShader(shaderType);
+    uint32_t shader = glCreateShader(shaderType);
     glShaderSource(shader, 1, &code, NULL);
     glCompileShader(shader);
 
@@ -100,6 +100,16 @@ void Shader::setUint(const std::string &name, uint32_t n) const {
         glUniform1ui(uniformLocations.at(name), n);
     } catch (const std::exception &e) {
         std::cout << "ERROR::SHADER::GET_UNIFORM_FAILED (" + name + ")\n";
+    }
+}
+
+void Shader::setColor(const std::string &name, const Color &color) const {
+    setUint(name, color.toHex());
+}
+
+void Shader::setColorPalette(const std::string &name, const ColorPalette &colorPalette) {
+    for (size_t i = 0; i < 16u; i++) {
+        setColor(std::format("{}[{}]", name, i), colorPalette[i]);
     }
 }
 

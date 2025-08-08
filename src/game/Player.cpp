@@ -1,7 +1,7 @@
 #include <game/Player.h>
 
 Player::Player(std::shared_ptr<Settings> settings)
-    : settings(settings), view(settings->getSize(), settings->getFOV()) {
+    : settings(settings), fov(settings->getFOV()), sensitivity(settings->getSensitivity()), view(settings->getSize(), settings->getFOV()) {
 }
 
 void Player::update(float deltaTime) {
@@ -12,7 +12,17 @@ void Player::resizeView(int width, int height) {
     view.updateViewport(width, height, fov);
 }
 
+void Player::resizeView(int width, int height, float fov) {
+    this->fov = fov;
+    view.updateViewport(width, height, fov);
+}
+
 void Player::resizeView(const glm::ivec2 &size) {
+    view.updateViewport(size, fov);
+}
+
+void Player::resizeView(const glm::ivec2 &size, float fov) {
+    this->fov = fov;
     view.updateViewport(size, fov);
 }
 
@@ -52,6 +62,14 @@ void Player::setMovingRight(bool state) {
     }
 }
 
+void Player::setSensitivity(float multiplier) {
+    sensitivity = multiplier;
+}
+
 const glm::mat4 &Player::getProjView() {
     return view.getProjView();
+}
+
+float Player::getSensitivity() const {
+    return sensitivity;
 }

@@ -14,6 +14,7 @@ private:
 
     glm::ivec2 size;
     float fov;
+    float sensitivity;
     bool vSync;
     bool printFPS;
 
@@ -29,6 +30,7 @@ public:
     int getWidth() const { return size.x; }
     int getHeight() const { return size.y; }
     float getFOV() const { return fov; }
+    float getSensitivity() const { return sensitivity; }
     bool isVSync() const { return vSync; }
     bool isPrintFPS() const { return printFPS; }
 
@@ -36,6 +38,7 @@ public:
     void setWidth(int width) { size.x = width; }
     void setHeight(int height) { size.y = height; }
     void setFOV(float fov) { this->fov = fov; }
+    void setSensitivity(float multiplier) { sensitivity = multiplier; }
     void setVSync(bool state) { vSync = state; }
     void setPrintFPS(bool state) { printFPS = state; }
 };

@@ -18,12 +18,10 @@ Currently able to render voxels one at a time with keyboard and mouse controls.
 * Interior face culling
 * 2D movement
 * Camera controls
-* Hot reloadable settings in a .ini
+* Hot reloadable settings & color palettes in `.ini`s
 
 ## Planned
 * Fullscreen toggle on F11
 * MSAA
 * Jumping / flying
 * Keybind settings in a .ini
-* Sensitivity settings in a .ini
-* Better managed color palettes

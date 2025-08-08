@@ -1,6 +1,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include <util/ColorPalette.h>
+
 #include <glm/mat4x4.hpp>
 
 #include <string>
@@ -8,8 +10,8 @@
 
 class Shader {
 private:
-    unsigned int ID;
-    std::unordered_map<std::string, unsigned int> uniformLocations;
+    uint32_t ID;
+    std::unordered_map<std::string, uint32_t> uniformLocations;
 
     /// @brief Reads a shader file into a string
     /// @param path Path to the shader
@@ -17,34 +19,36 @@ private:
     void getShader(const std::string &path, std::string &shaderCode);
 
     /// @brief Load a shader from a file
-    /// @param path Path to the shader
     /// @param shaderType GLenum for type of shader (eg Gl_VERTEX_SHADER)
     /// @return Shader ID from glCreateShader
-    unsigned int loadShader(const std::string &path, int shaderType);
+    uint32_t loadShader(const std::string &path, int shaderType);
 
 public:
-    /// @brief Initialises a shader program with a vertex and fragment shader
-    /// @param vertexPath Path to the vertex shader
-    /// @param fragmentPath Path to the fragment shader
     Shader(const std::string &vertexPath, const std::string &fragmentPath);
     ~Shader();
 
     Shader(const Shader &) = delete;
     Shader &operator=(const Shader &) = delete;
 
-    /// @brief Tells OpenGL to use this shader
+    // Tells OpenGL to use this shader
     void setActive() const;
 
-    /// @brief Set a uint uniform (call setActive first)
+    // Set a uint uniform (call setActive first)
     void setUint(const std::string &name, uint32_t n) const;
 
-    /// @brief Set a vec3 uniform (call setActive first)
+    // Set a Color uniform (call setActive first)
+    void setColor(const std::string &name, const Color &color) const;
+
+    // Set a ColorPalette uniform (call setActive first)
+    void setColorPalette(const std::string &name, const ColorPalette &colorPalette);
+
+    // Set a vec3 uniform (call setActive first)
     void setVec3(const std::string &name, const glm::vec3 &vector) const;
 
-    /// @brief Set a uvec3 uniform (call setActive first)
+    // Set a uvec3 uniform (call setActive first)
     void setUVec3(const std::string &name, const glm::uvec3 &vector) const;
 
-    /// @brief Set a mat4 uniform (call setActive first)
+    // Set a mat4 uniform (call setActive first)
     void setMat4(const std::string &name, const glm::mat4 &matrix) const;
 };
 

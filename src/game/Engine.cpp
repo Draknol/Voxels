@@ -80,6 +80,11 @@ void Engine::setWindowActive() {
     }
 }
 
+void Engine::setVSync(bool state) {
+    setWindowActive();
+    Window::setVsync(state);
+}
+
 void Engine::setSkyColor(const Color &color) {
     window.setClearColor(color);
 }

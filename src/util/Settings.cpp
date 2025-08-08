@@ -18,6 +18,7 @@ void Settings::save() {
          << "width = " << size.x << "\n"
          << "height = " << size.y << "\n"
          << "fov = " << fov << "\n"
+         << "sensitivity = " << sensitivity << "\n"
          << "vSync = " << boolToOnOff(vSync) << "\n"
          << "printFPS = " << boolToOnOff(printFPS) << "\n";
 
@@ -25,8 +26,9 @@ void Settings::save() {
 }
 
 void Settings::reload() {
+
     INIReader reader(path);
-    if (reader.ParseError() < 0) {
+    if (reader.ParseError() != 0) {
         std::cerr << "ERROR::SETTINGS::INI_PARSE_FAILED (\"" << path << "\")\n";
         exit(-1);
     }
@@ -35,6 +37,7 @@ void Settings::reload() {
     size.x = reader.GetInteger("Graphics", "width", 800);
     size.y = reader.GetInteger("Graphics", "height", 800);
     fov = reader.GetReal("Graphics", "fov", 90.0);
+    sensitivity = reader.GetReal("Graphics", "sensitivity", 0.15);
     vSync = reader.GetBoolean("Graphics", "vSync", true);
     printFPS = reader.GetBoolean("Graphics", "printFPS", false);
 }

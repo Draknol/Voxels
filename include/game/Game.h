@@ -8,6 +8,8 @@
 class Game {
 private:
     std::shared_ptr<Settings> settings;
+    ColorPalette colorPalette;
+
     Engine engine;
     Player player;
     World world;
@@ -20,13 +22,15 @@ private:
     bool printFPS;
 
 public:
-    Game(const std::string &title, const std::string &settingsPath = "config/settings.ini");
+    Game(const std::string &title, const std::string &settingsPath = "config/settings.ini", const std::string &colorPalletePath = "config/color-palette.ini");
 
     // Renders one frame to the screen
     void render();
 
     // Checks if the game should continue running
     bool isRunning();
+
+    void updateFromSettings(std::shared_ptr<Settings> settings);
 };
 
 #endif
