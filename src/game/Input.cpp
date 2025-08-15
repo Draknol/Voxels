@@ -1,7 +1,5 @@
 #include <game/Input.h>
 
-#include <iostream>
-
 void Input::setupKeyCallback(Game *game, Engine &engine, Player &player, std::shared_ptr<Settings> settings) {
     engine.setKeyCallback([&, game, settings](Key::Action key, Key::State state) {
         // Ignore repeats
@@ -16,11 +14,19 @@ void Input::setupKeyCallback(Game *game, Engine &engine, Player &player, std::sh
             if (pressed) {
                 settings->reload();
                 game->updateFromSettings(settings);
+                if (settings->isFullscreen() != engine.isFullscreen()) {
+                    engine.toggleFullscreen();
+                }
             }
             break;
         case Key::EXIT:
             if (pressed) {
                 engine.close();
+            }
+            break;
+        case Key::TOGGLE_FULLSCREEN:
+            if (pressed) {
+                engine.toggleFullscreen();
             }
             break;
         case Key::WALK_FORWARD:

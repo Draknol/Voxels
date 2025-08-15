@@ -12,7 +12,8 @@ class Settings {
 private:
     std::string path;
 
-    glm::ivec2 size;
+    bool fullscreen;
+    glm::ivec2 size; // ignored in fullscreen
     float fov;
     float sensitivity;
     bool vSync;
@@ -26,6 +27,7 @@ public:
     void save();
     void reload();
 
+    bool isFullscreen() const { return fullscreen; }
     glm::ivec2 getSize() const { return size; }
     int getWidth() const { return size.x; }
     int getHeight() const { return size.y; }
@@ -34,6 +36,7 @@ public:
     bool isVSync() const { return vSync; }
     bool isPrintFPS() const { return printFPS; }
 
+    void setFullscreen(bool state) { fullscreen = state; }
     void setSize(const glm::ivec2 &size) { this->size = size; }
     void setWidth(int width) { size.x = width; }
     void setHeight(int height) { size.y = height; }

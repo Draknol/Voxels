@@ -10,12 +10,20 @@
 #include <string>
 
 struct GLFWwindow;
+struct GLFWmonitor;
+struct GLFWvidmode;
 
 class Window {
 private:
     GLFWwindow *window;
+    GLFWmonitor *monitor;
+    const GLFWvidmode *mode;
+    glm::ivec2 windowedSize;
+    glm::ivec2 fullscreenSize;
+    glm::ivec2 windowPosition;
 
-    std::function<void(Key::Action key, Key::State state)> keyCallbackFunc;
+    std::function<void(Key::Action key, Key::State state)>
+        keyCallbackFunc;
     std::function<void(int width, int height)> resizeCallbackFunc;
     std::function<void(double xpos, double ypos)> cursorCallbackFunc;
 
@@ -49,6 +57,7 @@ public:
     void resize(const glm::ivec2 &size);
 
     void setCursorVisable(bool state);
+    void setFullscreen(bool state);
 
     void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback);
     void setResizeCallback(std::function<void(int width, int height)> callback);
@@ -71,6 +80,8 @@ public:
 
     // Gets last cursor position (updated after cursor callback)
     glm::dvec2 getLastCursorPosition() { return lastCursorPosition; }
+
+    const glm::ivec2 &getFullscreenSize() { return fullscreenSize; }
 };
 
 #endif

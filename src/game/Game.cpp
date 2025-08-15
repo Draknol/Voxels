@@ -2,14 +2,17 @@
 
 #include <game/Input.h>
 
-#include <glfw/glfw3.h>
-
 Game::Game(const std::string &title, const std::string &settingsPath, const std::string &colorPalletePath)
     : settings(std::make_shared<Settings>(settingsPath)),
       colorPalette(colorPalletePath),
       engine(title, settings),
       player(settings),
       voxelShader("shader/voxel.vert", "shader/voxel.frag") {
+
+    // Update player view if using fullscreen
+    if (settings->isFullscreen()) {
+        player.resizeView(engine.getFullscreenSize());
+    }
 
     Input::setupKeyCallback(this, engine, player, settings);
     Input::setupResizeCallback(engine, player);

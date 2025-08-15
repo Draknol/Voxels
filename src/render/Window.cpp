@@ -1,5 +1,6 @@
 #include <render/Window.h>
 
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
@@ -18,10 +19,21 @@ Window::Window(int width, int height, const std::string &title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    // MSAA - fixed for now
+    glEnable(GL_MULTISAMPLE);
+    glfwWindowHint(GLFW_SAMPLES, 4);
+
     if (!(window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL))) {
         std::cerr << "ERROR::WINDOW::CREATE_WINDOW_FAILED\n";
         exit(-1);
     }
+
+    monitor = glfwGetPrimaryMonitor();
+    mode = glfwGetVideoMode(monitor);
+    fullscreenSize.x = mode->width;
+    fullscreenSize.y = mode->height;
+    windowedSize.x = width;
+    windowedSize.y = height;
 
     // Set callbacks
     glfwSetWindowUserPointer(window, this);
@@ -42,6 +54,30 @@ Window::~Window() {
 void Window::setCursorVisable(bool state) {
     int glfwState = state ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
     glfwSetInputMode(window, GLFW_CURSOR, glfwState);
+}
+
+void Window::setFullscreen(bool state) {
+    if (state) {
+        // Save windowed info
+        glfwGetWindowPos(window, &windowPosition.x, &windowPosition.y);
+        glfwGetWindowSize(window, &windowedSize.x, &windowedSize.y);
+
+        // Make borderless
+        glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_FALSE);
+        glfwSetWindowAttrib(window, GLFW_RESIZABLE, GLFW_FALSE);
+
+        // Fullscreen
+        glfwSetWindowSize(window, fullscreenSize.x, fullscreenSize.y);
+        glfwSetWindowPos(window, 0, 0);
+    } else {
+        // Make bordered
+        glfwSetWindowAttrib(window, GLFW_DECORATED, GLFW_TRUE);
+        glfwSetWindowAttrib(window, GLFW_RESIZABLE, GLFW_FALSE);
+
+        // Windowed
+        glfwSetWindowSize(window, windowedSize.x, windowedSize.y);
+        glfwSetWindowPos(window, windowPosition.x, windowPosition.y);
+    }
 }
 
 void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {

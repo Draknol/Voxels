@@ -2,10 +2,13 @@
 
 #include <game/Input.h>
 
-#include <iostream>
-
 Engine::Engine(const std::string &title, std::shared_ptr<Settings> settings)
     : settings(settings), window(settings->getSize(), title) {
+
+    // Enable fullscreen if needed
+    if (settings->isFullscreen()) {
+        toggleFullscreen();
+    }
 
     // Set skyColor to a light-blue
     Color skyColor(0x8CB2FFFF);
@@ -58,7 +61,12 @@ glm::dvec2 Engine::getCursorDelta(double currentX, double currentY) {
 }
 
 glm::dvec2 Engine::getCursorDelta(const glm::dvec2 &currentPos) {
-    return currentPos - window.getLastCursorPosition();
+    if (cursorSkips == 0u) {
+        return currentPos - window.getLastCursorPosition();
+    } else {
+        cursorSkips--;
+        return glm::dvec2(0.0);
+    }
 }
 
 void Engine::setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback) {
@@ -83,6 +91,19 @@ void Engine::setWindowActive() {
 void Engine::setVSync(bool state) {
     setWindowActive();
     Window::setVsync(state);
+}
+
+void Engine::toggleFullscreen() {
+    fullscreen = !fullscreen;
+
+    // Skip mouse movement due to toggle.
+    if (fullscreen) {
+        cursorSkips += 1;
+    } else {
+        cursorSkips += 2;
+    }
+
+    window.setFullscreen(fullscreen);
 }
 
 void Engine::setSkyColor(const Color &color) {

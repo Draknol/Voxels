@@ -11,6 +11,7 @@ public:
         WALK_LEFT,
         WALK_BACK,
         WALK_RIGHT,
+        TOGGLE_FULLSCREEN,
     };
 
     enum State {

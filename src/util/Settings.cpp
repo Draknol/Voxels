@@ -15,6 +15,7 @@ void Settings::save() {
 
     // Window
     file << "[Graphics]\n"
+         << "fullscreen = " << boolToOnOff(fullscreen) << "\n"
          << "width = " << size.x << "\n"
          << "height = " << size.y << "\n"
          << "fov = " << fov << "\n"
@@ -34,6 +35,7 @@ void Settings::reload() {
     }
 
     // Window (default 800x800, VSync)
+    fullscreen = reader.GetBoolean("Graphics", "fullscreen", false);
     size.x = reader.GetInteger("Graphics", "width", 800);
     size.y = reader.GetInteger("Graphics", "height", 800);
     fov = reader.GetReal("Graphics", "fov", 90.0);

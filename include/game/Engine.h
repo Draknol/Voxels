@@ -13,6 +13,9 @@ private:
 
     Window window;
 
+    uint32_t cursorSkips = 0u;
+    bool fullscreen = false;
+
     // Sets this Engines window as the active window
     void setWindowActive();
 
@@ -35,11 +38,15 @@ public:
     glm::dvec2 getCursorDelta(double currentX, double currentY);
     glm::dvec2 getCursorDelta(const glm::dvec2 &currentPos);
 
+    bool isFullscreen() { return fullscreen; }
+    const glm::ivec2 &getFullscreenSize() { return window.getFullscreenSize(); }
+
     void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback);
     void setResizeCallback(std::function<void(int width, int height)> callback);
     void setCursorCallback(std::function<void(double xpos, double ypos)> callback);
 
     void setVSync(bool state);
+    void toggleFullscreen();
 
     // Sets the clear color of the window
     void setSkyColor(const Color &color);
