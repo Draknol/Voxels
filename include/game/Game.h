@@ -1,36 +1,22 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <game/Engine.h>
-#include <game/Player.h>
-#include <util/Clock.h>
+#include <string>
 
-class Game {
-private:
-    std::shared_ptr<Settings> settings;
-    ColorPalette colorPalette;
+namespace Game {
+// Call once before using Game
+void init(const std::string &title, const std::string &settingsPath = "config/settings.ini", const std::string &colorPalletePath = "config/color-palette.ini");
 
-    Engine engine;
-    Player player;
-    World world;
+// Call before exiting
+void close();
 
-    Shader voxelShader;
+// Renders one frame to the screen
+void render();
 
-    Clock clock;
+// Checks if the game should continue running
+bool isRunning();
 
-    float deltaTime;
-    bool printFPS;
-
-public:
-    Game(const std::string &title, const std::string &settingsPath = "config/settings.ini", const std::string &colorPalletePath = "config/color-palette.ini");
-
-    // Renders one frame to the screen
-    void render();
-
-    // Checks if the game should continue running
-    bool isRunning();
-
-    void updateFromSettings(std::shared_ptr<Settings> settings);
-};
+void updateFromSettings();
+} // namespace Game
 
 #endif

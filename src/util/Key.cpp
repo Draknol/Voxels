@@ -16,6 +16,12 @@ int Key::toGLFWKey(Key::Action key) {
         return GLFW_KEY_S;
     case WALK_RIGHT:
         return GLFW_KEY_D;
+    case JUMP:
+        return GLFW_KEY_SPACE;
+    case CROUCH:
+        return GLFW_KEY_LEFT_CONTROL;
+    case SPRINT:
+        return GLFW_KEY_LEFT_SHIFT;
     case TOGGLE_FULLSCREEN:
         return GLFW_KEY_F11;
     default:
@@ -50,6 +56,12 @@ Key::Action Key::fromGLFWKey(int key) {
         return WALK_BACK;
     case GLFW_KEY_D:
         return WALK_RIGHT;
+    case GLFW_KEY_SPACE:
+        return JUMP;
+    case GLFW_KEY_LEFT_CONTROL:
+        return CROUCH;
+    case GLFW_KEY_LEFT_SHIFT:
+        return SPRINT;
     case GLFW_KEY_F11:
         return TOGGLE_FULLSCREEN;
     default:

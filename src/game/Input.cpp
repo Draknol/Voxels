@@ -1,7 +1,12 @@
 #include <game/Input.h>
 
-void Input::setupKeyCallback(Game *game, Engine &engine, Player &player, std::shared_ptr<Settings> settings) {
-    engine.setKeyCallback([&, game, settings](Key::Action key, Key::State state) {
+#include <game/Game.h>
+#include <game/Engine.h>
+#include <util/Settings.h>
+
+namespace Input {
+void setupKeyCallback(Player &player) {
+    Engine::setKeyCallback([&](Key::Action key, Key::State state) {
         // Ignore repeats
         if (state == Key::State::REPEAT) {
             return;
@@ -12,21 +17,21 @@ void Input::setupKeyCallback(Game *game, Engine &engine, Player &player, std::sh
         switch (key) {
         case Key::HOT_RELOAD:
             if (pressed) {
-                settings->reload();
-                game->updateFromSettings(settings);
-                if (settings->isFullscreen() != engine.isFullscreen()) {
-                    engine.toggleFullscreen();
+                Settings::reload();
+                Game::updateFromSettings();
+                if (Settings::isFullscreen() != Engine::isFullscreen()) {
+                    Engine::toggleFullscreen();
                 }
             }
             break;
         case Key::EXIT:
             if (pressed) {
-                engine.close();
+                Engine::close();
             }
             break;
         case Key::TOGGLE_FULLSCREEN:
             if (pressed) {
-                engine.toggleFullscreen();
+                Engine::toggleFullscreen();
             }
             break;
         case Key::WALK_FORWARD:
@@ -41,26 +46,36 @@ void Input::setupKeyCallback(Game *game, Engine &engine, Player &player, std::sh
         case Key::WALK_RIGHT:
             player.setMovingRight(pressed);
             break;
+        case Key::JUMP:
+            player.setJumping(pressed);
+            break;
+        case Key::CROUCH:
+            player.setCrouching(pressed);
+            break;
+        case Key::SPRINT:
+            player.setSprinting(pressed);
         default:
             break;
         }
     });
 }
 
-void Input::setupResizeCallback(Engine &engine, Player &player) {
-    engine.setResizeCallback([&](int width, int height) {
-        engine.resize(width, height);
-        player.resizeView(width, height);
+void setupResizeCallback(Player &player) {
+    Engine::setResizeCallback([&](int width, int height) {
+        Engine::resize(width, height);
+        player.updateViewport(width, height);
     });
 }
 
-void Input::setupCursorCallback(Engine &engine, Player &player) {
-    engine.setCursorCallback([&](double xpos, double ypos) {
-        glm::dvec2 cursorDelta = engine.getCursorDelta(xpos, ypos);
+void setupCursorCallback(Player &player) {
+    Engine::setCursorCallback([&](double xpos, double ypos) {
+        glm::dvec2 cursorDelta = Engine::getCursorDelta(xpos, ypos);
         cursorDelta.y *= -1;
 
         cursorDelta *= player.getSensitivity();
 
-        player.rotateView(cursorDelta.x, cursorDelta.y);
+        player.rotate(cursorDelta.x, cursorDelta.y);
     });
 }
+
+} // namespace Input

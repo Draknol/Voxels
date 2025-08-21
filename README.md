@@ -1,5 +1,5 @@
 # Voxels
-A project for learning voxels in OpenGL.
+The start of a Voxel renderer.
 Currently able to render voxels one at a time with keyboard and mouse controls.
 
 ## Install instructions
@@ -8,6 +8,9 @@ Currently able to render voxels one at a time with keyboard and mouse controls.
 3. Clone the repository: `git clone https://github.com/Draknol/Voxels`
 4. From root, run: `cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=[vcpkg-path]/scripts/buildsystems/vcpkg.cmake`
 5. To build: `cmake --build build --config release`
+
+## Gallery
+![Screenshot of a voxel chunk](/gallery/Voxel%20Chunk.png)
 
 ## Features
 * Minimal voxel rendering (position and color)
@@ -18,11 +21,10 @@ Currently able to render voxels one at a time with keyboard and mouse controls.
 * Interior face culling
 * MSAA (always on for now)
 * Toggleable fullscreen
-* 2D movement
+* Flying movement
+* Sprinting
 * Camera controls
 * Hot reloadable settings & color palettes in `.ini`s
 
 ## Planned
-* Better active window managing
-* Jumping / flying
 * Keybind settings in a .ini

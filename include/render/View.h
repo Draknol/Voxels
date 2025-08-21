@@ -9,20 +9,23 @@ private:
     glm::mat4 viewMatrix;
     glm::mat4 projViewMatrix;
 
-    float yaw;
-    float pitch;
+    float fov = 90.0f;
+    float yaw = 0.0f;
+    float pitch = 0.0f;
 
     glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
     constexpr static glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
 
+protected:
+    void update(const glm::ivec3 &moveDirection = glm::ivec3(0), float distance = 0.0f, float verticalDistance = 0.0f);
+
 public:
-    View(float width, float height, float fov);
-    View(const glm::vec2 &size, float fov);
+    View(float width = 800.0f, float height = 800.0f, float fov = 90.0f);
+    View(const glm::vec2 &size, float fov = 90.0f);
 
-    void updateViewport(float width, float height, float fov);
-    void updateViewport(const glm::ivec2 &size, float fov);
-
-    void update(const glm::ivec2 &moveDirection = glm::ivec2(0), float distance = 0.0f);
+    // Uses previous fov by default
+    void updateViewport(float width, float height, float fov = -1.0f);
+    void updateViewport(const glm::ivec2 &size, float fov = -1.0f);
 
     void rotate(float yawOffset, float pitchOffset);
 

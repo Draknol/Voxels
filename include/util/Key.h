@@ -11,6 +11,9 @@ public:
         WALK_LEFT,
         WALK_BACK,
         WALK_RIGHT,
+        JUMP,
+        CROUCH,
+        SPRINT,
         TOGGLE_FULLSCREEN,
     };
 

@@ -12,6 +12,7 @@ public:
 
     // Resets clock and returns time in seconds since last reset
     double reset();
+
     void updateFPS(double deltaTime);
 };
 

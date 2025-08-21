@@ -1,12 +1,19 @@
 #include <game/Engine.h>
 
-#include <game/Input.h>
+#include <render/Window.h>
+#include <util/Settings.h>
 
-Engine::Engine(const std::string &title, std::shared_ptr<Settings> settings)
-    : settings(settings), window(settings->getSize(), title) {
+namespace {
+uint32_t cursorSkips = 0u;
+bool fullscreen = false;
+} // namespace
+
+namespace Engine {
+void init(const std::string &title) {
+    Window::init(Settings::getSize(), title);
 
     // Enable fullscreen if needed
-    if (settings->isFullscreen()) {
+    if (Settings::isFullscreen()) {
         toggleFullscreen();
     }
 
@@ -14,86 +21,82 @@ Engine::Engine(const std::string &title, std::shared_ptr<Settings> settings)
     Color skyColor(0x8CB2FFFF);
 
     // Set window properties
-    setWindowActive();
-    window.setCursorVisable(false);
+    Window::setCursorVisible(false);
     Window::setDepthTest(true);
     Window::setBackFaceCull(true);
     Window::setClearColor(skyColor);
-    Window::setVsync(settings->isVSync());
+    Window::setVsync(Settings::isVSync());
 }
 
-Engine::~Engine() {
-    window.terminate();
+void terminate() {
+    Window::terminate();
 }
 
-void Engine::render(const World &world, const Shader &voxelShader) {
-    setWindowActive();
-
+void render(const World &world) {
     Window::pollEvents();
-
     Window::clear();
 
     for (const VoxelChunk &chunk : world) {
-        chunk.drawMesh(voxelShader);
+        chunk.drawMesh();
     }
 
-    window.display();
+    Window::display();
 }
 
-bool Engine::isRunning() {
-    return window.isOpen();
+bool isRunning() {
+    return Window::isOpen();
 }
 
-void Engine::close() {
-    window.close();
+void close() {
+    Window::close();
 }
 
-void Engine::resize(int width, int height) {
-    window.resize(width, height);
+void resize(int width, int height) {
+    Window::resize(width, height);
 }
 
-void Engine::resize(const glm::ivec2 &size) {
-    window.resize(size);
+void resize(const glm::ivec2 &size) {
+    Window::resize(size);
 }
 
-glm::dvec2 Engine::getCursorDelta(double currentX, double currentY) {
+glm::dvec2 getCursorDelta(double currentX, double currentY) {
     return getCursorDelta(glm::dvec2(currentX, currentY));
 }
 
-glm::dvec2 Engine::getCursorDelta(const glm::dvec2 &currentPos) {
+glm::dvec2 getCursorDelta(const glm::dvec2 &currentPos) {
     if (cursorSkips == 0u) {
-        return currentPos - window.getLastCursorPosition();
+        return currentPos - Window::getLastCursorPosition();
     } else {
         cursorSkips--;
         return glm::dvec2(0.0);
     }
 }
 
-void Engine::setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback) {
-    window.setKeyCallback(callback);
+bool isFullscreen() {
+    return fullscreen;
 }
 
-void Engine::setResizeCallback(std::function<void(int width, int height)> callback) {
-    window.setResizeCallback(callback);
+const glm::ivec2 &getFullscreenSize() {
+    return Window::getFullscreenSize();
 }
 
-void Engine::setCursorCallback(std::function<void(double xpos, double ypos)> callback) {
-    window.setCursorCallback(callback);
+void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback) {
+    Window::setKeyCallback(callback);
 }
 
-void Engine::setWindowActive() {
-    if (activeWindow != &window) {
-        activeWindow = &window;
-        window.setActive();
-    }
+void setResizeCallback(std::function<void(int width, int height)> callback) {
+    Window::setResizeCallback(callback);
 }
 
-void Engine::setVSync(bool state) {
-    setWindowActive();
+void setCursorCallback(std::function<void(double xpos, double ypos)> callback) {
+    Window::setCursorCallback(callback);
+}
+
+void setVSync(bool state) {
     Window::setVsync(state);
 }
 
-void Engine::toggleFullscreen() {
+void toggleFullscreen() {
     fullscreen = !fullscreen;
 
     // Skip mouse movement due to toggle.
@@ -103,9 +106,10 @@ void Engine::toggleFullscreen() {
         cursorSkips += 2;
     }
 
-    window.setFullscreen(fullscreen);
+    Window::setFullscreen(fullscreen);
 }
 
-void Engine::setSkyColor(const Color &color) {
-    window.setClearColor(color);
+void setSkyColor(const Color &color) {
+    Window::setClearColor(color);
 }
+} // namespace Engine

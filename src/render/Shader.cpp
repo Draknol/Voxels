@@ -1,15 +1,12 @@
 #include <render/Shader.h>
 
 #include <GL/glew.h>
-#include <glm/mat4x4.hpp>
 
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
 Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath) {
-    glewInit();
-
     uint32_t vertex = loadShader(vertexPath, GL_VERTEX_SHADER);
     uint32_t fragment = loadShader(fragmentPath, GL_FRAGMENT_SHADER);
 
@@ -31,7 +28,7 @@ Shader::Shader(const std::string &vertexPath, const std::string &fragmentPath) {
     GLint count;
     glGetProgramiv(ID, GL_ACTIVE_UNIFORMS, &count);
 
-    char name[256]; // Increase size if needed
+    char name[256];
     for (GLint i = 0; i < count; ++i) {
         GLsizei length;
         GLint size;
@@ -91,48 +88,10 @@ uint32_t Shader::loadShader(const std::string &fileName, int shaderType) {
     return shader;
 }
 
+uint32_t Shader::getLocation(const std::string &name) {
+    return uniformLocations.at(name);
+}
+
 void Shader::setActive() const {
     glUseProgram(ID);
-}
-
-void Shader::setUint(const std::string &name, uint32_t n) const {
-    try {
-        glUniform1ui(uniformLocations.at(name), n);
-    } catch (const std::exception &e) {
-        std::cout << "ERROR::SHADER::GET_UNIFORM_FAILED (" + name + ")\n";
-    }
-}
-
-void Shader::setColor(const std::string &name, const Color &color) const {
-    setUint(name, color.toHex());
-}
-
-void Shader::setColorPalette(const std::string &name, const ColorPalette &colorPalette) {
-    for (size_t i = 0; i < 16u; i++) {
-        setColor(std::format("{}[{}]", name, i), colorPalette[i]);
-    }
-}
-
-void Shader::setVec3(const std::string &name, const glm::vec3 &vector) const {
-    try {
-        glUniform3fv(uniformLocations.at(name), 1, &vector.x);
-    } catch (const std::exception &e) {
-        std::cout << "ERROR::SHADER::GET_UNIFORM_FAILED (" + name + ")\n";
-    }
-}
-
-void Shader::setUVec3(const std::string &name, const glm::uvec3 &vector) const {
-    try {
-        glUniform3uiv(uniformLocations.at(name), 1, &vector.x);
-    } catch (const std::exception &e) {
-        std::cout << "ERROR::SHADER::GET_UNIFORM_FAILED (" + name + ")\n";
-    }
-}
-
-void Shader::setMat4(const std::string &name, const glm::mat4 &matrix) const {
-    try {
-        glUniformMatrix4fv(uniformLocations.at(name), 1, false, &matrix[0].x);
-    } catch (const std::exception &e) {
-        std::cout << "ERROR::SHADER::GET_UNIFORM_FAILED (" + name + ")\n";
-    }
 }

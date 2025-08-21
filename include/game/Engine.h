@@ -2,54 +2,47 @@
 #define ENGINE_H
 
 #include <game/World.h>
-#include <render/Window.h>
-#include <util/Settings.h>
+#include <util/Color.h>
+#include <util/Key.h>
 
-class Engine {
-private:
-    // Keep track of the active window
-    static inline Window *activeWindow = nullptr;
-    std::shared_ptr<Settings> settings;
+#include <glm/vec2.hpp>
 
-    Window window;
+#include <functional>
+#include <string>
 
-    uint32_t cursorSkips = 0u;
-    bool fullscreen = false;
+namespace Engine {
+void init(const std::string &title);
 
-    // Sets this Engines window as the active window
-    void setWindowActive();
+// Call once before exit
+void terminate();
 
-public:
-    Engine(const std::string &title, std::shared_ptr<Settings> settings);
-    ~Engine();
+// Renders a frame to the screen
+void render(const World &world);
 
-    // Renders a frame to the screen
-    void render(const World &world, const Shader &voxelShader);
+// Checks if the engine should continue running
+bool isRunning();
 
-    // Checks if the engine should continue running
-    bool isRunning();
+// Mark the window for closing
+void close();
 
-    // Mark the window for closing
-    void close();
+void resize(int width, int height);
+void resize(const glm::ivec2 &size);
 
-    void resize(int width, int height);
-    void resize(const glm::ivec2 &size);
+glm::dvec2 getCursorDelta(double currentX, double currentY);
+glm::dvec2 getCursorDelta(const glm::dvec2 &currentPos);
 
-    glm::dvec2 getCursorDelta(double currentX, double currentY);
-    glm::dvec2 getCursorDelta(const glm::dvec2 &currentPos);
+bool isFullscreen();
+const glm::ivec2 &getFullscreenSize();
 
-    bool isFullscreen() { return fullscreen; }
-    const glm::ivec2 &getFullscreenSize() { return window.getFullscreenSize(); }
+void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback);
+void setResizeCallback(std::function<void(int width, int height)> callback);
+void setCursorCallback(std::function<void(double xpos, double ypos)> callback);
 
-    void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback);
-    void setResizeCallback(std::function<void(int width, int height)> callback);
-    void setCursorCallback(std::function<void(double xpos, double ypos)> callback);
+void setVSync(bool state);
+void toggleFullscreen();
 
-    void setVSync(bool state);
-    void toggleFullscreen();
-
-    // Sets the clear color of the window
-    void setSkyColor(const Color &color);
-};
+// Sets the clear color of the window
+void setSkyColor(const Color &color);
+} // namespace Engine
 
 #endif

@@ -1,4 +1,5 @@
 #include <render/VoxelChunk.h>
+#include <render/ShaderManager.h>
 
 #include <gl/glew.h>
 
@@ -81,9 +82,9 @@ void VoxelChunk::updateMesh(const std::vector<VoxelVertex> &verts) {
     glBindVertexArray(0);
 }
 
-void VoxelChunk::drawMesh(const Shader &shader) const {
+void VoxelChunk::drawMesh() const {
 
-    shader.setUVec3("chunkOffset", chunkOffset);
+    ShaderManager::setUVec3("chunkOffset", chunkOffset);
 
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);

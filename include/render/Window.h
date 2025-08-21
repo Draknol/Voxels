@@ -9,79 +9,48 @@
 #include <functional>
 #include <string>
 
-struct GLFWwindow;
-struct GLFWmonitor;
-struct GLFWvidmode;
+namespace Window {
+void init(const glm::ivec2 &size, const std::string &title);
+void init(int width, int height, const std::string &title);
 
-class Window {
-private:
-    GLFWwindow *window;
-    GLFWmonitor *monitor;
-    const GLFWvidmode *mode;
-    glm::ivec2 windowedSize;
-    glm::ivec2 fullscreenSize;
-    glm::ivec2 windowPosition;
+// Call once before exit
+void terminate();
 
-    std::function<void(Key::Action key, Key::State state)>
-        keyCallbackFunc;
-    std::function<void(int width, int height)> resizeCallbackFunc;
-    std::function<void(double xpos, double ypos)> cursorCallbackFunc;
+// Checks if the Window is marked for closing
+bool isOpen();
 
-    static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods);
-    static void resizeCallback(GLFWwindow *window, int width, int height);
-    static void cursorCallback(GLFWwindow *window, double xpos, double ypos);
+// Marks the Window for closing
+void close();
 
-    glm::dvec2 lastCursorPosition;
+// Swap buffers to display updated window
+void display();
 
-public:
-    Window(const glm::ivec2 &size, const std::string &title);
-    Window(int width, int height, const std::string &title);
-    ~Window();
+void resize(int width, int height);
+void resize(const glm::ivec2 &size);
 
-    Window(const Window &) = delete;
-    Window &operator=(const Window &) = delete;
+void setCursorVisible(bool state);
+void setFullscreen(bool state);
 
-    // Checks if the Window is marked for closing
-    bool isOpen();
+void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback);
+void setResizeCallback(std::function<void(int width, int height)> callback);
+void setCursorCallback(std::function<void(double xpos, double ypos)> callback);
 
-    // Marks the Window for closing
-    void close();
+void clear();
+void setClearColor(float red, float green, float blue, float alpha);
+void setClearColor(const Color &color);
+void setClearColor(uint32_t rgba);
 
-    // Swap buffers to display updated window
-    void display();
+void setVsync(bool isVSync);
+void setDepthTest(bool state);
+void setBackFaceCull(bool state);
+void setFrontFaceCull(bool state);
 
-    // Set as active Window for static calls
-    void setActive();
+void pollEvents();
 
-    void resize(int width, int height);
-    void resize(const glm::ivec2 &size);
+// Gets last cursor position (updated after cursor callback)
+glm::dvec2 getLastCursorPosition();
 
-    void setCursorVisable(bool state);
-    void setFullscreen(bool state);
-
-    void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback);
-    void setResizeCallback(std::function<void(int width, int height)> callback);
-    void setCursorCallback(std::function<void(double xpos, double ypos)> callback);
-
-    static void clear();
-    static void setClearColor(float red, float green, float blue, float alpha);
-    static void setClearColor(const Color &color);
-    static void setClearColor(uint32_t rgba);
-
-    static void setVsync(bool isVSync);
-    static void setDepthTest(bool state);
-    static void setBackFaceCull(bool state);
-    static void setFrontFaceCull(bool state);
-
-    static void pollEvents();
-
-    // Terminate GLFW — call once before exit
-    static void terminate();
-
-    // Gets last cursor position (updated after cursor callback)
-    glm::dvec2 getLastCursorPosition() { return lastCursorPosition; }
-
-    const glm::ivec2 &getFullscreenSize() { return fullscreenSize; }
-};
+const glm::ivec2 &getFullscreenSize();
+} // namespace Window
 
 #endif

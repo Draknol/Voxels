@@ -18,6 +18,11 @@ Color ColorPalette::parseColor(const std::string &value) {
     return Color(r, g, b, a);
 }
 
+void ColorPalette::load(const std::string &palettePath) {
+    path = palettePath;
+    reload();
+}
+
 void ColorPalette::reload() {
     INIReader reader(path);
     if (reader.ParseError() < 0) {

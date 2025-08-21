@@ -1,40 +1,20 @@
 #include <game/Player.h>
 
-Player::Player(std::shared_ptr<Settings> settings)
-    : settings(settings), fov(settings->getFOV()), sensitivity(settings->getSensitivity()), view(settings->getSize(), settings->getFOV()) {
-}
+#include <util/Settings.h>
+
+#include <iostream>
+
+Player::Player() : View(Settings::getSize(), Settings::getFOV()), sensitivity(Settings::getSensitivity()) {}
 
 void Player::update(float deltaTime) {
-    view.update(moveDirection, moveSpeed * deltaTime);
-}
-
-void Player::resizeView(int width, int height) {
-    view.updateViewport(width, height, fov);
-}
-
-void Player::resizeView(int width, int height, float fov) {
-    this->fov = fov;
-    view.updateViewport(width, height, fov);
-}
-
-void Player::resizeView(const glm::ivec2 &size) {
-    view.updateViewport(size, fov);
-}
-
-void Player::resizeView(const glm::ivec2 &size, float fov) {
-    this->fov = fov;
-    view.updateViewport(size, fov);
-}
-
-void Player::rotateView(float yawOffset, float pitchOffset) {
-    view.rotate(yawOffset, pitchOffset);
+    View::update(moveDirection, moveSpeed * deltaTime, flySpeed * deltaTime);
 }
 
 void Player::setMovingForward(bool state) {
     if (state) {
-        moveDirection.y = 1;
-    } else if (moveDirection.y == 1) {
-        moveDirection.y = 0;
+        moveDirection.z = 1;
+    } else if (moveDirection.z == 1) {
+        moveDirection.z = 0;
     }
 }
 
@@ -48,9 +28,9 @@ void Player::setMovingLeft(bool state) {
 
 void Player::setMovingBackward(bool state) {
     if (state) {
-        moveDirection.y = -1;
-    } else if (moveDirection.y == -1) {
-        moveDirection.y = 0;
+        moveDirection.z = -1;
+    } else if (moveDirection.z == -1) {
+        moveDirection.z = 0;
     }
 }
 
@@ -62,14 +42,26 @@ void Player::setMovingRight(bool state) {
     }
 }
 
-void Player::setSensitivity(float multiplier) {
-    sensitivity = multiplier;
+void Player::setJumping(bool state) {
+    if (state) {
+        moveDirection.y = 1;
+    } else if (moveDirection.y == 1) {
+        moveDirection.y = 0;
+    }
 }
 
-const glm::mat4 &Player::getProjView() {
-    return view.getProjView();
+void Player::setCrouching(bool state) {
+    if (state) {
+        moveDirection.y = -1;
+    } else if (moveDirection.y == -1) {
+        moveDirection.y = 0;
+    }
 }
 
-float Player::getSensitivity() const {
-    return sensitivity;
+void Player::setSprinting(bool state) {
+    if (state) {
+        moveSpeed = sprintSpeed;
+    } else {
+        moveSpeed = walkSpeed;
+    }
 }

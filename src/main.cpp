@@ -1,10 +1,10 @@
 #include <game/Game.h>
 
 int main() {
-    Game game("Voxel");
+    Game::init("Voxel");
 
-    while (game.isRunning()) {
-        game.render();
+    while (Game::isRunning()) {
+        Game::render();
     }
 
     return 0;

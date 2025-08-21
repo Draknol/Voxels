@@ -4,9 +4,9 @@
 #include <glm/vec3.hpp>
 
 #include <render/VoxelVertex.h>
-#include <render/Shader.h>
 
 #include <vector>
+#include <memory>
 
 class VoxelChunk {
 private:
@@ -69,7 +69,7 @@ public:
 
     void buildMesh();
 
-    void drawMesh(const Shader &shader) const;
+    void drawMesh() const;
 };
 
 #endif

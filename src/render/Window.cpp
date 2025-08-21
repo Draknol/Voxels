@@ -5,12 +5,51 @@
 
 #include <iostream>
 
-Window::Window(const glm::ivec2 &size, const std::string &title)
-    : Window(size.x, size.y, title) {}
+namespace {
+GLFWwindow *window = nullptr;
+GLFWmonitor *monitor = nullptr;
+const GLFWvidmode *mode = nullptr;
+glm::ivec2 windowedSize;
+glm::ivec2 fullscreenSize;
+glm::ivec2 windowPosition;
 
-Window::Window(int width, int height, const std::string &title) {
+std::function<void(Key::Action key, Key::State state)> keyCallbackFunc;
+std::function<void(int width, int height)> resizeCallbackFunc;
+std::function<void(double xpos, double ypos)> cursorCallbackFunc;
+
+glm::dvec2 lastCursorPosition;
+
+void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    if (keyCallbackFunc) {
+        keyCallbackFunc(Key::fromGLFWKey(key), Key::fromGLFWState(action));
+    }
+}
+
+void resizeCallback(GLFWwindow *window, int width, int height) {
+    if (resizeCallbackFunc) {
+        resizeCallbackFunc(width, height);
+    }
+}
+
+void cursorCallback(GLFWwindow *window, double xpos, double ypos) {
+    if (cursorCallbackFunc) {
+        cursorCallbackFunc(xpos, ypos);
+    }
+
+    // update cursor position
+    lastCursorPosition.x = xpos;
+    lastCursorPosition.y = ypos;
+}
+} // namespace
+
+namespace Window {
+void init(const glm::ivec2 &size, const std::string &title) {
+    init(size.x, size.y, title);
+}
+
+void init(int width, int height, const std::string &title) {
     if (glfwInit() == GL_FALSE) {
-        std::cerr << "ERROR::WINDOW::GLFW_INIT_FAILED\n";
+        std::cerr << "ERROR::GLFW_INIT_FAILED\n";
         exit(-1);
     }
 
@@ -24,9 +63,11 @@ Window::Window(int width, int height, const std::string &title) {
     glfwWindowHint(GLFW_SAMPLES, 4);
 
     if (!(window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL))) {
-        std::cerr << "ERROR::WINDOW::CREATE_WINDOW_FAILED\n";
+        std::cerr << "ERROR::CREATE_WINDOW_FAILED\n";
         exit(-1);
     }
+
+    glfwMakeContextCurrent(window);
 
     monitor = glfwGetPrimaryMonitor();
     mode = glfwGetVideoMode(monitor);
@@ -36,7 +77,6 @@ Window::Window(int width, int height, const std::string &title) {
     windowedSize.y = height;
 
     // Set callbacks
-    glfwSetWindowUserPointer(window, this);
     glfwSetKeyCallback(window, keyCallback);
     glfwSetFramebufferSizeCallback(window, resizeCallback);
     glfwSetCursorPosCallback(window, cursorCallback);
@@ -45,18 +85,19 @@ Window::Window(int width, int height, const std::string &title) {
     glfwGetCursorPos(window, &lastCursorPosition.x, &lastCursorPosition.y);
 }
 
-Window::~Window() {
+void terminate() {
     if (window) {
         glfwDestroyWindow(window);
     }
+    glfwTerminate();
 }
 
-void Window::setCursorVisable(bool state) {
+void setCursorVisible(bool state) {
     int glfwState = state ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED;
     glfwSetInputMode(window, GLFW_CURSOR, glfwState);
 }
 
-void Window::setFullscreen(bool state) {
+void setFullscreen(bool state) {
     if (state) {
         // Save windowed info
         glfwGetWindowPos(window, &windowPosition.x, &windowPosition.y);
@@ -80,88 +121,59 @@ void Window::setFullscreen(bool state) {
     }
 }
 
-void Window::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    Window *win = (Window *)glfwGetWindowUserPointer(window);
-    if (win->keyCallbackFunc) {
-        win->keyCallbackFunc(Key::fromGLFWKey(key), Key::fromGLFWState(action));
-    }
-}
-
-void Window::resizeCallback(GLFWwindow *window, int width, int height) {
-    Window *win = (Window *)glfwGetWindowUserPointer(window);
-    if (win->resizeCallbackFunc) {
-        win->resizeCallbackFunc(width, height);
-    }
-}
-
-void Window::cursorCallback(GLFWwindow *window, double xpos, double ypos) {
-    Window *win = (Window *)glfwGetWindowUserPointer(window);
-    if (win->cursorCallbackFunc) {
-        win->cursorCallbackFunc(xpos, ypos);
-    }
-
-    // update cursor position
-    win->lastCursorPosition.x = xpos;
-    win->lastCursorPosition.y = ypos;
-}
-
-bool Window::isOpen() {
+bool isOpen() {
     return !glfwWindowShouldClose(window);
 }
 
-void Window::close() {
+void close() {
     glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-void Window::display() {
+void display() {
     glfwSwapBuffers(window);
 }
 
-void Window::setActive() {
-    glfwMakeContextCurrent(window);
-}
-
-void Window::resize(int width, int height) {
+void resize(int width, int height) {
     glfwSetWindowSize(window, width, height);
 }
 
-void Window::resize(const glm::ivec2 &size) {
+void resize(const glm::ivec2 &size) {
     glfwSetWindowSize(window, size.x, size.y);
 }
 
-void Window::setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback) {
+void setKeyCallback(std::function<void(Key::Action key, Key::State state)> callback) {
     keyCallbackFunc = callback;
 }
 
-void Window::setResizeCallback(std::function<void(int width, int height)> callback) {
+void setResizeCallback(std::function<void(int width, int height)> callback) {
     resizeCallbackFunc = callback;
 }
 
-void Window::setCursorCallback(std::function<void(double xpos, double ypos)> callback) {
+void setCursorCallback(std::function<void(double xpos, double ypos)> callback) {
     cursorCallbackFunc = callback;
 }
 
-void Window::clear() {
+void clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Window::setVsync(bool isVsync) {
+void setVsync(bool isVsync) {
     glfwSwapInterval(isVsync);
 }
 
-void Window::setClearColor(float red, float green, float blue, float alpha) {
+void setClearColor(float red, float green, float blue, float alpha) {
     glClearColor(red, green, blue, alpha);
 }
 
-void Window::setClearColor(const Color &color) {
+void setClearColor(const Color &color) {
     glClearColor(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 }
 
-void Window::setClearColor(uint32_t rgba) {
+void setClearColor(uint32_t rgba) {
     setClearColor(Color(rgba));
 }
 
-void Window::setDepthTest(bool state) {
+void setDepthTest(bool state) {
     if (state) {
         glEnable(GL_DEPTH_TEST);
     } else {
@@ -169,7 +181,7 @@ void Window::setDepthTest(bool state) {
     }
 }
 
-void Window::setBackFaceCull(bool state) {
+void setBackFaceCull(bool state) {
     GLint currentState;
     glGetIntegerv(GL_CULL_FACE_MODE, &currentState);
 
@@ -185,7 +197,7 @@ void Window::setBackFaceCull(bool state) {
     }
 }
 
-void Window::setFrontFaceCull(bool state) {
+void setFrontFaceCull(bool state) {
     GLint currentState;
     glGetIntegerv(GL_CULL_FACE_MODE, &currentState);
 
@@ -201,10 +213,15 @@ void Window::setFrontFaceCull(bool state) {
     }
 }
 
-void Window::pollEvents() {
-    glfwPollEvents();
+glm::dvec2 getLastCursorPosition() {
+    return lastCursorPosition;
 }
 
-void Window::terminate() {
-    glfwTerminate();
+const glm::ivec2 &getFullscreenSize() {
+    return fullscreenSize;
 }
+
+void pollEvents() {
+    glfwPollEvents();
+}
+} // namespace Window

@@ -1,58 +1,87 @@
 #include <game/Game.h>
 
+#include <game/Engine.h>
 #include <game/Input.h>
+#include <render/ShaderManager.h>
+#include <util/Settings.h>
+#include <util/ColorPalette.h>
+#include <util/Clock.h>
 
-Game::Game(const std::string &title, const std::string &settingsPath, const std::string &colorPalletePath)
-    : settings(std::make_shared<Settings>(settingsPath)),
-      colorPalette(colorPalletePath),
-      engine(title, settings),
-      player(settings),
-      voxelShader("shader/voxel.vert", "shader/voxel.frag") {
+namespace {
+ColorPalette colorPalette;
+uint32_t voxelShader;
+Player player;
+World world;
+Clock gameClock;
+float deltaTime = 0.0f;
+bool printFPS = false;
+} // namespace
 
-    // Update player view if using fullscreen
-    if (settings->isFullscreen()) {
-        player.resizeView(engine.getFullscreenSize());
+namespace Game {
+void init(const std::string &title, const std::string &settingsPath, const std::string &colorPalletePath) {
+    Settings::init(settingsPath);
+    colorPalette.load(colorPalletePath);
+
+    Engine::init(title);
+
+    ShaderManager::init();
+    voxelShader = ShaderManager::addShader("shader/voxel.vert", "shader/voxel.frag");
+    ShaderManager::setActiveShader(voxelShader);
+    ShaderManager::setColorPalette("colorPalette", colorPalette);
+
+    if (Settings::isFullscreen()) {
+        player.updateViewport(Engine::getFullscreenSize());
+    } else {
+        player.updateViewport(Settings::getSize(), Settings::getFOV());
     }
 
-    Input::setupKeyCallback(this, engine, player, settings);
-    Input::setupResizeCallback(engine, player);
-    Input::setupCursorCallback(engine, player);
+    player.setSensitivity(Settings::getSensitivity());
 
-    voxelShader.setActive();
+    Input::setupKeyCallback(player);
+    Input::setupResizeCallback(player);
+    Input::setupCursorCallback(player);
 
-    voxelShader.setColorPalette("colorPalette", colorPalette);
-
-    world.addVoxelChunk(0u, 0u, 0u);
+    world.addVoxelChunk(1u, 0u, 0u);
 
     // Initialise delta time
-    deltaTime = clock.reset();
-    printFPS = settings->isPrintFPS();
+    deltaTime = gameClock.reset();
+    printFPS = Settings::isPrintFPS();
 }
 
-void Game::render() {
-    deltaTime = clock.reset();
+void close() {
+    Engine::terminate();
+}
+
+void render() {
+    deltaTime = gameClock.reset();
 
     if (printFPS) {
-        clock.updateFPS(deltaTime);
+        gameClock.updateFPS(deltaTime);
     }
 
     player.update(deltaTime);
 
-    voxelShader.setMat4("projView", player.getProjView());
+    ShaderManager::setActiveShader(voxelShader);
+    ShaderManager::setMat4("projView", player.getProjView());
 
-    engine.render(world, voxelShader);
+    Engine::render(world);
 }
 
-bool Game::isRunning() {
-    return engine.isRunning();
+bool isRunning() {
+    return Engine::isRunning();
 }
 
-void Game::updateFromSettings(std::shared_ptr<Settings> settings) {
+void updateFromSettings() {
     colorPalette.reload();
-    printFPS = settings->isPrintFPS();
-    engine.resize(settings->getSize());
-    engine.setVSync(settings->isVSync());
-    player.resizeView(settings->getSize(), settings->getFOV());
-    player.setSensitivity(settings->getSensitivity());
-    voxelShader.setColorPalette("colorPalette", colorPalette);
+    printFPS = Settings::isPrintFPS();
+
+    Engine::resize(Settings::getSize());
+    Engine::setVSync(Settings::isVSync());
+
+    player.updateViewport(Settings::getSize(), Settings::getFOV());
+    player.setSensitivity(Settings::getSensitivity());
+
+    ShaderManager::setActiveShader(voxelShader);
+    ShaderManager::setColorPalette("colorPalette", colorPalette);
 }
+} // namespace Game

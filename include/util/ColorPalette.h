@@ -9,13 +9,15 @@ class ColorPalette {
 private:
     std::string path;
 
-    Color colors[16];
+    Color colors[16] = {};
 
     Color parseColor(const std::string &value);
 
 public:
+    ColorPalette() {};
     ColorPalette(const std::string &path);
 
+    void load(const std::string &palettePath);
     void reload();
 
     const Color &operator[](size_t index) const;
