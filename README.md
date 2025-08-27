@@ -14,6 +14,8 @@ Currently able to render voxels one at a time with keyboard and mouse controls.
 
 ## Features
 * Minimal voxel rendering (position and color)
+* Voxels can be added / removed manually
+* Placeholder terrain
 * Batch drawing (chunks)
 * Color palettes
 * Depth testing

@@ -11,7 +11,7 @@ namespace {
 ColorPalette colorPalette;
 uint32_t voxelShader;
 Player player;
-World world;
+const World *worldPtr = nullptr;
 Clock gameClock;
 float deltaTime = 0.0f;
 bool printFPS = false;
@@ -41,11 +41,13 @@ void init(const std::string &title, const std::string &settingsPath, const std::
     Input::setupResizeCallback(player);
     Input::setupCursorCallback(player);
 
-    world.addVoxelChunk(1u, 0u, 0u);
-
     // Initialise delta time
     deltaTime = gameClock.reset();
     printFPS = Settings::isPrintFPS();
+}
+
+void useWorld(const World *world) {
+    worldPtr = world;
 }
 
 void close() {
@@ -64,7 +66,9 @@ void render() {
     ShaderManager::setActiveShader(voxelShader);
     ShaderManager::setMat4("projView", player.getProjView());
 
-    Engine::render(world);
+    if (worldPtr) {
+        Engine::render(*worldPtr);
+    }
 }
 
 bool isRunning() {

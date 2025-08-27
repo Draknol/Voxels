@@ -17,28 +17,13 @@ VoxelChunk::VoxelChunk(const glm::uvec3 &chunkPosition)
     glVertexAttribIPointer(0, 1, GL_UNSIGNED_INT, sizeof(VoxelVertex), (void *)0);
     glEnableVertexAttribArray(0);
 
-    // Solid cube
+    // Empty by default
     for (size_t i = 0; i < MAX_CHUNK_SIZE; i++) {
-        chunk[i] = rand() % 15 + 1;
+        chunk[i] = 0;
     }
 
-    // Sphere
-    // glm::vec3 centrePoint(CHUNK_SIZE / 2.0f);
-    // for (size_t z = 0; z < CHUNK_SIZE; z++) {
-    //     for (size_t y = 0; y < CHUNK_SIZE; y++) {
-    //         for (size_t x = 0; x < CHUNK_SIZE; x++) {
-    //             glm::vec3 voxelPos(x, y, z);
-    //             if (glm::distance(voxelPos, centrePoint) < CHUNK_SIZE / 2.0f) {
-    //                 setVoxel(x, y, z, rand() % 3 + 1);
-    //             } else {
-    //                 setVoxel(x, y, z, 0u);
-    //             }
-    //         }
-    //     }
-    // }
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    // Build with no vertices to setup
+    updateMesh(std::vector<VoxelVertex>());
 }
 
 VoxelChunk::~VoxelChunk() {
@@ -109,9 +94,14 @@ void VoxelChunk::setVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val) {
     chunk[x + CHUNK_SIZE * y + CHUNK_SIZE * CHUNK_SIZE * z] = val;
 }
 
+void VoxelChunk::setVoxel(const glm::u8vec3 &position, uint8_t val) {
+    setVoxel(position.x, position.y, position.z, val);
+}
+
 uint8_t VoxelChunk::getVoxel(uint8_t x, uint8_t y, uint8_t z) const {
     return chunk[x + CHUNK_SIZE * y + CHUNK_SIZE * CHUNK_SIZE * z];
 }
+
 void VoxelChunk::appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x, uint8_t y, uint8_t z) const {
 
     // Skip if there is no voxel

@@ -57,7 +57,6 @@ private:
     // Rounds size up to a power of 2
     size_t ceilPow2(size_t size) const;
 
-    void setVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val);
     uint8_t getVoxel(uint8_t x, uint8_t y, uint8_t z) const;
 
     void appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x, uint8_t y, uint8_t z) const;
@@ -66,6 +65,9 @@ public:
     VoxelChunk(uint32_t x, uint32_t y, uint32_t z);
     VoxelChunk(const glm::uvec3 &chunkPosition);
     ~VoxelChunk();
+
+    void setVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val);
+    void setVoxel(const glm::u8vec3 &position, uint8_t val);
 
     void buildMesh();
 
