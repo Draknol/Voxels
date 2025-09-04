@@ -1,6 +1,6 @@
 # Voxels
-The start of a Voxel renderer.
-Currently able to render voxels one at a time with keyboard and mouse controls.
+The start of a Voxel game.
+Currently able to render basic terrain and fly around with keyboard and mouse controls.
 
 ## Install instructions
 1. Install [CMake](https://cmake.org/download) (3.15 or later)
@@ -15,7 +15,7 @@ Currently able to render voxels one at a time with keyboard and mouse controls.
 ## Features
 * Minimal voxel rendering (position and color)
 * Voxels can be added / removed manually
-* Placeholder terrain
+* Placeholder perlin terrain
 * Batch drawing (chunks)
 * Color palettes
 * Depth testing
@@ -30,3 +30,5 @@ Currently able to render voxels one at a time with keyboard and mouse controls.
 
 ## Planned
 * Keybind settings in a .ini
+* Move world gen into World
+* Improve terrain detail (octaves)

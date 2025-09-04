@@ -1,6 +1,6 @@
 {
   "name": "voxels",
-  "version-string": "0.1.1",
+  "version-string": "0.1.2",
   "dependencies": [
     "glfw3",
     "glm",
