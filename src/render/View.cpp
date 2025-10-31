@@ -20,7 +20,7 @@ void View::updateViewport(float width, float height, float fov) {
     }
 
     glViewport(0, 0, width, height);
-    projMatrix = glm::perspective(glm::radians(this->fov), width / height, 0.1f, 100.0f);
+    projMatrix = glm::perspective(glm::radians(this->fov), width / height, 0.1f, 1000.0f);
     projViewMatrix = projMatrix * viewMatrix;
 }
 

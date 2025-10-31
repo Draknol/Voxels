@@ -14,6 +14,8 @@ private:
     static constexpr size_t MAX_CHUNK_SIZE = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
     static constexpr size_t MAX_CHUNK_VERTS = 36u * MAX_CHUNK_SIZE;
 
+    bool empty = true; // Used to skip fully empty chunks
+
     glm::uvec3 chunkOffset;
 
     uint8_t *chunk = new uint8_t[MAX_CHUNK_SIZE];

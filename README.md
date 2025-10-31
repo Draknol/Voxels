@@ -30,5 +30,3 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 
 ## Planned
 * Keybind settings in a .ini
-* Move world gen into World
-* Improve terrain detail (octaves)

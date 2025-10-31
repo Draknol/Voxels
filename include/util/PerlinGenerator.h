@@ -3,21 +3,17 @@
 
 #include <glm/vec2.hpp>
 
-#include <cstdint>
+namespace PerlinGenerator {
+/// @brief Sample a position once
+/// @return Value in range [-1, 1]
+float sample(glm::vec2 position);
 
-class PerlinGenerator {
-private:
-    float frequency;
-    float amplitude;
-
-    glm::vec2 getGradient(const glm::vec2 &corner) const;
-    float calcDot(const glm::vec2 &corner, const glm::vec2 &position) const;
-    float interp(float a, float b, float weight) const;
-
-public:
-    PerlinGenerator(float frequency, float amplitude);
-
-    float sample(glm::vec2 position) const;
-};
+/// @brief Sample a position at multiple octaves
+/// @param amplitude Streches terrain vertically
+/// @param frequency Compresses detail horizontally
+/// @param octaves Increases detail
+/// @return Value in range [0, amplitude]
+float sample(glm::vec2 position, float amplitude, float frequency, size_t octaves);
+} // namespace PerlinGenerator
 
 #endif

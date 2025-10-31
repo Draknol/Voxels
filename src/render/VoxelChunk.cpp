@@ -45,6 +45,8 @@ void VoxelChunk::buildMesh() {
         }
     }
 
+    empty = (vertices.size() == 0);
+
     updateMesh(vertices);
 }
 
@@ -68,6 +70,10 @@ void VoxelChunk::updateMesh(const std::vector<VoxelVertex> &verts) {
 }
 
 void VoxelChunk::drawMesh() const {
+    // Skip if there is nothing to draw
+    if (empty) {
+        return;
+    }
 
     ShaderManager::setUVec3("chunkOffset", chunkOffset);
 

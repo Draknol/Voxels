@@ -1,5 +1,22 @@
 #include <game/Game.h>
-#include <util/PerlinGenerator.h>
+#include <level/WorldGenerator.h>
+#include <util/Random.h>
+
+#include <algorithm>
+#include <iostream>
+
+uint8_t colorDecider(float currentHeight, float maxHeight, uint64_t id) {
+    if (currentHeight > 80 - Random::inRangeHash(0, 4, id)) {
+        return 1;
+    }
+    if (currentHeight >= (size_t)maxHeight - Random::inRangeHash(1, 2, id)) {
+        return 2;
+    }
+    if (currentHeight > maxHeight - Random::inRangeHash(2, 5, id)) {
+        return 3;
+    }
+    return 15;
+}
 
 int main() {
     Game::init("Voxel");
@@ -7,26 +24,7 @@ int main() {
     World world;
     Game::useWorld(&world);
 
-    PerlinGenerator random(0.5f, 15.0f);
-
-    // Placeholder terrain
-    for (size_t x = 0u; x < 10u; x++) {
-        for (size_t z = 0u; z < 10u; z++) {
-            world.addVoxelChunk(x, 0u, z);
-
-            for (size_t i = 0u; i < 16u; i++) {
-                for (size_t j = 0u; j < 16u; j++) {
-                    uint8_t val = rand() % 2 ? 2 : 10;
-                    size_t height = (size_t)random.sample(glm::vec2(x + i / 16.0f, z + j / 16.0f)) + 1;
-                    for (size_t h = 0u; h < height; h++) {
-                        world.changeBlock(x, 0u, z, i, h, j, val);
-                    }
-                }
-            }
-
-            world.buildChunk(x, 0u, z);
-        }
-    }
+    WorldGenerator::generatePerlin(&world, 30u, 8u, 30u, 128.0f, 0.007f, 4u, 60, 4, colorDecider);
 
     while (Game::isRunning()) {
         Game::render();
