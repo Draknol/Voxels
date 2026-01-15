@@ -4,7 +4,7 @@ layout(location = 0) in uint aData;
 
 uniform mat4 projView;
 uniform uvec3 chunkOffset;
-uniform uint colorPalette[16];
+uniform uint materialColors[16];
 
 vec3 unpackPosition(uint data);
 uint unpackColorID(uint data);
@@ -13,7 +13,7 @@ vec4 hexToColor(uint hex);
 out vec4 vColor;
 
 void main() {
-    uint hex = colorPalette[unpackColorID(aData)];
+    uint hex = materialColors[unpackColorID(aData)];
     vColor = hexToColor(hex);
     gl_Position = projView * vec4(unpackPosition(aData) + chunkOffset, 1.0);
 }

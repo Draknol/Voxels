@@ -4,11 +4,9 @@
 #include <game/Input.h>
 #include <render/ShaderManager.h>
 #include <util/Settings.h>
-#include <util/ColorPalette.h>
 #include <util/Clock.h>
 
 namespace {
-ColorPalette colorPalette;
 uint32_t voxelShader;
 Player player;
 const World *worldPtr = nullptr;
@@ -18,16 +16,15 @@ bool printFPS = false;
 } // namespace
 
 namespace Game {
-void init(const std::string &title, const std::string &settingsPath, const std::string &colorPalletePath) {
-    Settings::init(settingsPath);
-    colorPalette.load(colorPalletePath);
+void init(const std::string &title, const std::string &userSettingsPath, const std::string &worldSettingsPath) {
+    Settings::load(userSettingsPath, worldSettingsPath);
 
     Engine::init(title);
 
     ShaderManager::init();
     voxelShader = ShaderManager::addShader("shader/voxel.vert", "shader/voxel.frag");
     ShaderManager::setActiveShader(voxelShader);
-    ShaderManager::setColorPalette("colorPalette", colorPalette);
+    ShaderManager::updateMaterials();
 
     if (Settings::isFullscreen()) {
         player.updateViewport(Engine::getFullscreenSize());
@@ -76,7 +73,6 @@ bool isRunning() {
 }
 
 void updateFromSettings() {
-    colorPalette.reload();
     printFPS = Settings::isPrintFPS();
 
     Engine::resize(Settings::getSize());
@@ -86,6 +82,5 @@ void updateFromSettings() {
     player.setSensitivity(Settings::getSensitivity());
 
     ShaderManager::setActiveShader(voxelShader);
-    ShaderManager::setColorPalette("colorPalette", colorPalette);
 }
 } // namespace Game

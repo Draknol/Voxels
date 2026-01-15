@@ -1,9 +1,11 @@
 #ifndef SHADER_MANAGER_H
 #define SHADER_MANAGER_H
 
-#include <util/ColorPalette.h>
+#include <util/Color.h>
 
 #include <glm/mat4x4.hpp>
+
+#include <string>
 
 namespace ShaderManager {
 void init();
@@ -22,9 +24,6 @@ void setUint(const std::string &name, uint32_t n);
 // Set a Color uniform for the active shader
 void setColor(const std::string &name, const Color &color);
 
-// Set a ColorPalette uniform for the active shader
-void setColorPalette(const std::string &name, const ColorPalette &colorPalette);
-
 // Set a vec3 uniform for the active shader
 void setVec3(const std::string &name, const glm::vec3 &vector);
 
@@ -33,6 +32,8 @@ void setUVec3(const std::string &name, const glm::uvec3 &vector);
 
 // Set a mat4 uniform for the active shader
 void setMat4(const std::string &name, const glm::mat4 &matrix);
+
+void updateMaterials();
 } // namespace ShaderManager
 
 #endif

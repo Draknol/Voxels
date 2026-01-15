@@ -1,8 +1,7 @@
 #include <render/ShaderManager.h>
 
 #include <render/Shader.h>
-
-#include <util/ColorPalette.h>
+#include <util/Settings.h>
 
 #include <GL/glew.h>
 
@@ -42,12 +41,6 @@ void ShaderManager::setColor(const std::string &name, const Color &color) {
     setUint(name, color.toHex());
 }
 
-void ShaderManager::setColorPalette(const std::string &name, const ColorPalette &colorPalette) {
-    for (size_t i = 0; i < 16u; i++) {
-        setColor(std::format("{}[{}]", name, i), colorPalette[i]);
-    }
-}
-
 void ShaderManager::setVec3(const std::string &name, const glm::vec3 &vector) {
     try {
         glUniform3fv(shaders.at(activeID)->getLocation(name), 1, &vector.x);
@@ -69,6 +62,13 @@ void ShaderManager::setMat4(const std::string &name, const glm::mat4 &matrix) {
         glUniformMatrix4fv(shaders.at(activeID)->getLocation(name), 1, false, &matrix[0].x);
     } catch (const std::exception &e) {
         std::cout << "ERROR::SHADER::GET_UNIFORM_FAILED (" + name + ")\n";
+    }
+}
+
+void ShaderManager::updateMaterials() {
+    const std::string name = "materialColors";
+    for (size_t i = 0; i < 16u; i++) {
+        setColor(std::format("{}[{}]", name, i), Settings::getMaterial(i).color);
     }
 }
 } // namespace ShaderManager

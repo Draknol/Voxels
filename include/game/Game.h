@@ -7,7 +7,10 @@
 
 namespace Game {
 // Call once before using Game
-void init(const std::string &title, const std::string &settingsPath = "config/settings.ini", const std::string &colorPalletePath = "config/color-palette.ini");
+void init(
+    const std::string &title,
+    const std::string &userSettingsPath = "config/user-settings.ini",
+    const std::string &worldSettingsPath = "config/world-settings.ini");
 
 // Stores a World* to use for rendering
 void useWorld(const World *world);

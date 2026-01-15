@@ -4,13 +4,14 @@
 #include <glm/vec3.hpp>
 
 #include <render/VoxelVertex.h>
+#include <util/Settings.h>
 
 #include <vector>
 #include <memory>
 
 class VoxelChunk {
 private:
-    static constexpr size_t CHUNK_SIZE = 16u;
+    static constexpr size_t CHUNK_SIZE = Settings::CHUNK_SIZE;
     static constexpr size_t MAX_CHUNK_SIZE = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
     static constexpr size_t MAX_CHUNK_VERTS = 36u * MAX_CHUNK_SIZE;
 

@@ -10,14 +10,12 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 5. To build: `cmake --build build --config release`
 
 ## Gallery
-![Screenshot of a voxel chunk](/gallery/Voxel%20Chunk.png)
+![Screenshot of improved terrain](/gallery/Improved%20Terrain.png)
 
 ## Features
-* Minimal voxel rendering (position and color)
-* Voxels can be added / removed manually
-* Placeholder perlin terrain
+* Perlin Terrain
+* Up to 15 materials
 * Batch drawing (chunks)
-* Color palettes
 * Depth testing
 * Back face culling
 * Interior face culling
@@ -26,7 +24,9 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 * Flying movement
 * Sprinting
 * Camera controls
-* Hot reloadable settings & color palettes in `.ini`s
+* Hot reloadable `user-settings.ini`
+* `world-settings.ini` for easy world gen adjustments
 
 ## Planned
+* Simple lighting (priority)
 * Keybind settings in a .ini
