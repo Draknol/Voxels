@@ -21,6 +21,8 @@ bool printFPS = false;
 size_t xChunks = 1u;
 size_t yChunks = 1u;
 size_t zChunks = 1u;
+size_t bottomTrim = 0u;
+size_t topTrim = 0u;
 
 // Perlin
 float amplitude = 128.0f;
@@ -62,6 +64,8 @@ void save() {
               << "xChunks = " << xChunks << "\n"
               << "yChunks = " << yChunks << "\n"
               << "zChunks = " << zChunks << "\n"
+              << "bottomTrim = " << bottomTrim << "\n"
+              << "topTrim = " << topTrim << "\n"
 
               << "[Perlin]\n"
               << "amplitude = " << amplitude << "\n"
@@ -116,6 +120,8 @@ void reload() {
         xChunks = reader.GetInteger("WorldSize", "xChunks", 1u);
         yChunks = reader.GetInteger("WorldSize", "yChunks", 1u);
         zChunks = reader.GetInteger("WorldSize", "zChunks", 1u);
+        bottomTrim = reader.GetInteger("WorldSize", "bottomTrim", 0u);
+        topTrim = reader.GetInteger("WorldSize", "topTrim", 0u);
 
         // Perlin
         amplitude = reader.GetReal("Perlin", "amplitude", 128.0f);
@@ -162,10 +168,14 @@ void setPrintFPS(bool state) { printFPS = state; }
 size_t getXChunks() { return xChunks; }
 size_t getYChunks() { return yChunks; }
 size_t getZChunks() { return zChunks; }
+size_t getBottomTrim() { return bottomTrim; }
+size_t getTopTrim() { return topTrim; }
 
 void setXChunks(size_t size) { xChunks = size; }
 void setYChunks(size_t size) { yChunks = size; }
 void setZChunks(size_t size) { zChunks = size; }
+void setBottomTrim(size_t size) { bottomTrim = size; }
+void setTopTrim(size_t size) { topTrim = size; }
 
 // Perlin
 float getAmplitude() { return amplitude; }

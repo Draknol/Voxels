@@ -22,6 +22,9 @@ public:
     void changeBlock(uint8_t chunkX, uint8_t chunkY, uint8_t chunkZ, uint8_t voxelX, uint8_t voxelY, uint8_t voxelZ, uint8_t val);
     void changeBlock(const glm::u8vec3 &chunkPosition, const glm::u8vec3 &voxelPosition, uint8_t val);
 
+    void addBlock(uint8_t chunkX, uint8_t chunkY, uint8_t chunkZ, uint8_t voxelX, uint8_t voxelY, uint8_t voxelZ, uint8_t val);
+    void addBlock(const glm::u8vec3 &chunkPosition, const glm::u8vec3 &voxelPosition, uint8_t val);
+
     void buildChunk(uint8_t x, uint8_t y, uint8_t z);
     void buildChunk(const glm::u8vec3 &chunkPosition);
 

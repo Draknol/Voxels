@@ -31,6 +31,14 @@ void World::changeBlock(const glm::u8vec3 &chunkPosition, const glm::u8vec3 &vox
     chunkLocations.at(makeKey(chunkPosition))->setVoxel(voxelPosition, val);
 }
 
+void World::addBlock(uint8_t chunkX, uint8_t chunkY, uint8_t chunkZ, uint8_t voxelX, uint8_t voxelY, uint8_t voxelZ, uint8_t val) {
+    chunkLocations.at(makeKey(chunkX, chunkY, chunkZ))->addVoxel(voxelX, voxelY, voxelZ, val);
+}
+
+void World::addBlock(const glm::u8vec3 &chunkPosition, const glm::u8vec3 &voxelPosition, uint8_t val) {
+    chunkLocations.at(makeKey(chunkPosition))->addVoxel(voxelPosition, val);
+}
+
 void World::buildChunk(uint8_t x, uint8_t y, uint8_t z) {
     chunkLocations.at(makeKey(x, y, z))->buildMesh();
 }

@@ -9,7 +9,7 @@ enum FillDirection {
     BOTTOM_UP = 0,
     TOP_DOWN = 1,
     SURFACE_UP = 2,
-    SURfACE_DOWN = 3
+    SURFACE_DOWN = 3
 };
 
 struct Material

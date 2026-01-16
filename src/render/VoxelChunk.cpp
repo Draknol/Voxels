@@ -104,6 +104,17 @@ void VoxelChunk::setVoxel(const glm::u8vec3 &position, uint8_t val) {
     setVoxel(position.x, position.y, position.z, val);
 }
 
+void VoxelChunk::addVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val) {
+    uint8_t &voxel = chunk[x + CHUNK_SIZE * y + CHUNK_SIZE * CHUNK_SIZE * z];
+    if (voxel == 0u) {
+        voxel = val;
+    }
+}
+
+void VoxelChunk::addVoxel(const glm::u8vec3 &position, uint8_t val) {
+    addVoxel(position.x, position.y, position.z, val);
+}
+
 uint8_t VoxelChunk::getVoxel(uint8_t x, uint8_t y, uint8_t z) const {
     return chunk[x + CHUNK_SIZE * y + CHUNK_SIZE * CHUNK_SIZE * z];
 }

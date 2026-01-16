@@ -72,6 +72,9 @@ public:
     void setVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val);
     void setVoxel(const glm::u8vec3 &position, uint8_t val);
 
+    void addVoxel(uint8_t x, uint8_t y, uint8_t z, uint8_t val);
+    void addVoxel(const glm::u8vec3 &position, uint8_t val);
+
     void buildMesh();
 
     void drawMesh() const;

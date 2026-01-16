@@ -11,6 +11,8 @@ void generatePerlin(World *world) {
     size_t maxChunkX = Settings::getXChunks();
     size_t maxChunkY = Settings::getYChunks();
     size_t maxChunkZ = Settings::getZChunks();
+    size_t bottomTrim = Settings::getBottomTrim();
+    size_t topTrim = Settings::getTopTrim();
     size_t chunkSize = Settings::CHUNK_SIZE;
     size_t worldHeight = chunkSize * maxChunkY;
 
@@ -29,10 +31,6 @@ void generatePerlin(World *world) {
             // Loop over voxles
             for (size_t voxelX = 0u; voxelX < chunkSize; voxelX++) {
                 for (size_t voxelZ = 0u; voxelZ < chunkSize; voxelZ++) {
-                    // Pick random green
-                    uint8_t greenColor = rand() % 2 ? 2 : 10;
-                    uint8_t greyColor = 7;
-
                     // Sample height
                     glm::vec2 position(chunkX * chunkSize + voxelX, chunkZ * chunkSize + voxelZ);
                     float sampleHeight = PerlinGenerator::sample(position, amplitude, frequency, octCount);
@@ -46,13 +44,49 @@ void generatePerlin(World *world) {
                     uint64_t id = (xLoc << 32u) | zLoc;
 
                     // Update chunks
-                    for (size_t chunkY = 1u; chunkY < maxChunkY; chunkY++) {
-                        ;
-                        for (size_t h = 0u; h < chunkSize; h++) {
-                            uint32_t currentHeight = h + (chunkSize * chunkY);
-                            uint8_t color = materialDecider(currentHeight, sampleHeight, id, worldHeight);
-                            if (color != 0u) {
-                                world->changeBlock(chunkX, chunkY, chunkZ, voxelX, h, voxelZ, color);
+                    for (uint8_t materialID = 15u; materialID > 0u; materialID--) {
+                        const Material &material = Settings::getMaterial(materialID);
+
+                        if (material.name == "default") {
+                            continue;
+                        }
+
+                        size_t offset = material.offset;
+                        size_t isBound = material.isBound;
+                        size_t depth = Random::inRange(material.minDepth, material.maxDepth);
+
+                        size_t bottomHeight = 0u;
+                        size_t topHeight = 0u;
+
+                        switch (material.fillDirection) {
+                        case FillDirection::BOTTOM_UP:
+                            bottomHeight = offset;
+                            topHeight = bottomHeight + depth;
+                            break;
+                        case FillDirection::TOP_DOWN:
+                            topHeight = worldHeight - offset;
+                            bottomHeight = topHeight - depth;
+                            break;
+                        case FillDirection::SURFACE_UP:
+                            bottomHeight = (size_t)sampleHeight + offset;
+                            topHeight = bottomHeight + depth;
+                            break;
+                        case FillDirection::SURFACE_DOWN:
+                            topHeight = (size_t)sampleHeight - offset;
+                            bottomHeight = topHeight - depth;
+                            break;
+                        default:
+                            break;
+                        }
+
+                        for (size_t chunkY = bottomTrim; chunkY < maxChunkY - topTrim; chunkY++) {
+                            for (size_t h = 0u; h < chunkSize; h++) {
+                                uint32_t currentHeight = h + (chunkSize * chunkY);
+                                if (currentHeight >= bottomHeight && currentHeight <= topHeight) {
+                                    if (!isBound || currentHeight <= sampleHeight) {
+                                        world->addBlock(chunkX, chunkY, chunkZ, voxelX, h, voxelZ, materialID);
+                                    }
+                                }
                             }
                         }
                     }
@@ -65,44 +99,5 @@ void generatePerlin(World *world) {
             }
         }
     }
-}
-
-uint8_t materialDecider(uint32_t currentHeight, float sampleHeight, uint64_t id, size_t worldHeight) {
-    // Use first valid material
-    for (size_t i = 15; i > 0; i--) {
-        const Material &material = Settings::getMaterial(i);
-        uint32_t depth = Random::inRangeHash(material.minDepth, material.maxDepth, id + i);
-
-        if (material.isBound && currentHeight > sampleHeight) {
-            continue;
-        }
-
-        switch (material.fillDirection) {
-        case FillDirection::BOTTOM_UP:
-            if (currentHeight >= material.offset && currentHeight <= material.offset + depth) {
-                return i;
-            }
-            break;
-        case FillDirection::TOP_DOWN:
-            if (currentHeight >= worldHeight - material.offset - depth && currentHeight <= worldHeight - material.offset) {
-                return i;
-            }
-            break;
-        case FillDirection::SURFACE_UP:
-            if (currentHeight <= (uint32_t)sampleHeight + material.offset + depth) {
-                return i;
-            }
-            break;
-        case FillDirection::SURfACE_DOWN:
-            if (currentHeight >= (uint32_t)sampleHeight - material.offset - depth) {
-                return i;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-
-    return 0;
 }
 } // namespace WorldGenerator

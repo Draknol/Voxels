@@ -41,10 +41,14 @@ void setPrintFPS(bool state);
 size_t getXChunks();
 size_t getYChunks();
 size_t getZChunks();
+size_t getBottomTrim();
+size_t getTopTrim();
 
 void setXChunks(size_t size);
 void setYChunks(size_t size);
 void setZChunks(size_t size);
+void setBottomTrim(size_t size);
+void setTopTrim(size_t size);
 
 // Perlin
 float getAmplitude();
