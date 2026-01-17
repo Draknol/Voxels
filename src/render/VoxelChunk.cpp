@@ -131,7 +131,7 @@ void VoxelChunk::appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x
         for (size_t e = 0; e < 6u; e++) {
             glm::u8vec3 offset(x, y, z);
             const glm::u8vec3 &vert = cubeVerts[faceIndices[Left][e]];
-            vertices.emplace_back(vert + offset, color);
+            vertices.emplace_back(vert + offset, color, Left);
         }
     }
 
@@ -139,7 +139,7 @@ void VoxelChunk::appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x
         for (size_t e = 0; e < 6u; e++) {
             glm::u8vec3 offset(x, y, z);
             const glm::u8vec3 &vert = cubeVerts[faceIndices[Right][e]];
-            vertices.emplace_back(vert + offset, color);
+            vertices.emplace_back(vert + offset, color, Right);
         }
     }
 
@@ -147,7 +147,7 @@ void VoxelChunk::appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x
         for (size_t e = 0; e < 6u; e++) {
             glm::u8vec3 offset(x, y, z);
             const glm::u8vec3 &vert = cubeVerts[faceIndices[Back][e]];
-            vertices.emplace_back(vert + offset, color);
+            vertices.emplace_back(vert + offset, color, Back);
         }
     }
 
@@ -155,7 +155,7 @@ void VoxelChunk::appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x
         for (size_t e = 0; e < 6u; e++) {
             glm::u8vec3 offset(x, y, z);
             const glm::u8vec3 &vert = cubeVerts[faceIndices[Front][e]];
-            vertices.emplace_back(vert + offset, color);
+            vertices.emplace_back(vert + offset, color, Front);
         }
     }
 
@@ -163,7 +163,7 @@ void VoxelChunk::appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x
         for (size_t e = 0; e < 6u; e++) {
             glm::u8vec3 offset(x, y, z);
             const glm::u8vec3 &vert = cubeVerts[faceIndices[Bottom][e]];
-            vertices.emplace_back(vert + offset, color);
+            vertices.emplace_back(vert + offset, color, Bottom);
         }
     }
 
@@ -171,7 +171,7 @@ void VoxelChunk::appendCulledVoxel(std::vector<VoxelVertex> &vertices, uint8_t x
         for (size_t e = 0; e < 6u; e++) {
             glm::u8vec3 offset(x, y, z);
             const glm::u8vec3 &vert = cubeVerts[faceIndices[Top][e]];
-            vertices.emplace_back(vert + offset, color);
+            vertices.emplace_back(vert + offset, color, Top);
         }
     }
 }

@@ -37,15 +37,6 @@ private:
         {1u, 1u, 1u},
     };
 
-    enum Face {
-        Left,   // -X
-        Right,  // +X
-        Back,   // -Y
-        Front,  // +Y
-        Bottom, // -Z
-        Top     // +Z
-    };
-
     static constexpr uint32_t faceIndices[6][6] = {
         {0b011u, 0b010u, 0b001u, 0b000u, 0b001u, 0b010u}, // Left
         {0b101u, 0b110u, 0b111u, 0b110u, 0b101u, 0b100u}, // Right

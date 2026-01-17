@@ -13,7 +13,8 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 ![Screenshot of improved terrain](/gallery/Improved%20Terrain.png)
 
 ## Features
-* Perlin Terrain
+* Perlin terrain
+* Minimal lighting
 * Up to 15 materials
 * Batch drawing (chunks)
 * Depth testing
@@ -28,5 +29,5 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 * `world-settings.ini` for easy world gen adjustments
 
 ## Planned
-* Simple lighting (priority)
+* Blinn-Phong lighting (priority)
 * Keybind settings in a .ini
