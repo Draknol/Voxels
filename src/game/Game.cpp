@@ -62,6 +62,7 @@ void render() {
 
     ShaderManager::setActiveShader(voxelShader);
     ShaderManager::setMat4("projView", player.getProjView());
+    ShaderManager::setVec3("viewPos", player.getPosition());
 
     if (worldPtr) {
         Engine::render(*worldPtr);

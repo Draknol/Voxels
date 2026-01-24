@@ -24,7 +24,7 @@ void generatePerlin(World *world) {
         for (size_t chunkZ = 0u; chunkZ < maxChunkZ; chunkZ++) {
 
             // Create Chunks
-            for (size_t chunkY = 0u; chunkY < maxChunkY; chunkY++) {
+            for (size_t chunkY = bottomTrim; chunkY < maxChunkY - topTrim; chunkY++) {
                 world->addVoxelChunk(chunkX, chunkY, chunkZ);
             }
 
@@ -94,7 +94,7 @@ void generatePerlin(World *world) {
             }
 
             // Build chunk
-            for (size_t chunkY = 0u; chunkY < maxChunkY; chunkY++) {
+            for (size_t chunkY = bottomTrim; chunkY < maxChunkY - topTrim; chunkY++) {
                 world->buildChunk(chunkX, chunkY, chunkZ);
             }
         }

@@ -1,11 +1,14 @@
 #include <util/Random.h>
 
 #include <iostream>
-#include <cstdlib>
+#include <random>
 
 namespace Random {
+static std::mt19937 rnd(std::random_device{}());
+
 bool boolean() {
-    return rand() % 2;
+    std::bernoulli_distribution distribution(0.5f);
+    return distribution(rnd);
 }
 
 uint32_t inRange(uint32_t min, uint32_t max) {
@@ -16,6 +19,7 @@ uint32_t inRange(uint32_t min, uint32_t max) {
     if (max == min) {
         return max;
     }
-    return rand() % (max - min + 1) + min;
+    std::uniform_int_distribution distribution(min, max);
+    return distribution(rnd);
 }
 } // namespace Random

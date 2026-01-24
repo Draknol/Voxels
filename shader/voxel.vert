@@ -13,11 +13,13 @@ vec4 hexToColor(uint hex);
 
 out vec4 vColor;
 out vec3 vNorm;
+out vec3 vFragPos;
 
 void main() {
     uint hex = materialColors[unpackColorID(aData)];
     vColor = hexToColor(hex);
-    gl_Position = projView * vec4(unpackPosition(aData) + chunkOffset, 1.0);
+    vFragPos = unpackPosition(aData) + chunkOffset;
+    gl_Position = projView * vec4(vFragPos, 1.0);
     vNorm = unpackNormal(aData);
 }
 

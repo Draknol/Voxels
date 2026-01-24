@@ -14,7 +14,7 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 
 ## Features
 * Perlin terrain
-* Minimal lighting
+* Blinn-Phong lighting
 * Up to 15 materials
 * Batch drawing (chunks)
 * Depth testing
