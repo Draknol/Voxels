@@ -10,7 +10,7 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 5. To build: `cmake --build build --config release`
 
 ## Gallery
-![Screenshot of improved terrain](/gallery/Improved%20Terrain.png)
+![Screenshot of Shaded Terrain](/gallery/Lighting.png)
 
 ## Features
 * Perlin terrain
@@ -29,5 +29,6 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 * `world-settings.ini` for easy world gen adjustments
 
 ## Planned
-* Blinn-Phong lighting (priority)
+* 3D perlin noise
+* Spherical terrain
 * Keybind settings in a .ini
