@@ -50,11 +50,13 @@ void setZChunks(size_t size);
 void setBottomTrim(size_t size);
 void setTopTrim(size_t size);
 
-// Perlin
+// Terrain
+const char *getHeightMapPath();
 float getAmplitude();
 float getFrequency();
 float getOctCount();
 
+void setHeightMapPath(const char *path);
 void setAmplitude(float a);
 void setFrequency(float f);
 void setOctCount(float o);

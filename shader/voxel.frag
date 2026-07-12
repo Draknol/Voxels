@@ -9,7 +9,7 @@ uniform vec3 viewPos;
 
 void main() {
 
-    vec4 lightColor = vec4(1f, 1f, 0.98f, 1f) * 0.45f;
+    vec4 lightColor = vec4(1.0f, 1.0f, 0.98f, 1.0f) * 0.45f;
     vec3 viewDir = normalize(viewPos - vFragPos);
     vec3 lightDir = normalize(vec3(-1.3f, 1.5f, -1.0f));
     vec3 halfwayDir = normalize(lightDir + viewDir);

@@ -3,7 +3,7 @@
 
 #include <glm/vec2.hpp>
 
-namespace PerlinGenerator {
+namespace PerlinSampler {
 /// @brief Sample a position once
 /// @return Value in range [-1, 1]
 float sample(glm::vec2 position);
@@ -14,6 +14,6 @@ float sample(glm::vec2 position);
 /// @param octaves Increases detail
 /// @return Value in range [0, amplitude]
 float sample(glm::vec2 position, float amplitude, float frequency, size_t octaves);
-} // namespace PerlinGenerator
+} // namespace PerlinSampler
 
 #endif

@@ -13,7 +13,7 @@ Currently able to render basic terrain and fly around with keyboard and mouse co
 ![Screenshot of Shaded Terrain](/gallery/Lighting.png)
 
 ## Features
-* Perlin terrain
+* Perlin or height map terrain
 * Blinn-Phong lighting
 * Up to 15 materials
 * Batch drawing (chunks)

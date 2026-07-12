@@ -1,4 +1,4 @@
-#include <util/PerlinGenerator.h>
+#include <util/PerlinSampler.h>
 
 #include <glm/geometric.hpp>
 #include <glm/ext/scalar_constants.hpp>
@@ -39,7 +39,7 @@ float interp(float a, float b, float weight) {
 }
 } // namespace
 
-namespace PerlinGenerator {
+namespace PerlinSampler {
 float sample(glm::vec2 position) {
     float left = std::floor(position.x);
     float right = left + 1.0f;
@@ -83,4 +83,4 @@ float sample(glm::vec2 position, float amplitude, float frequency, size_t octave
 
     return height;
 }
-} // namespace PerlinGenerator
+} // namespace PerlinSampler

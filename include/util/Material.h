@@ -19,6 +19,8 @@ struct Material
     size_t offset = 0u;
     size_t minDepth = 1u;
     size_t maxDepth = 1u;
+    size_t maxHeight = UINT32_MAX;
+    size_t minHeight = 0u;
     Color color = Color();
     bool isBound = true;
 };

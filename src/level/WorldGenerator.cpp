@@ -2,12 +2,18 @@
 
 #include <util/Settings.h>
 #include <util/Random.h>
-#include <util/PerlinGenerator.h>
+#include <util/PerlinSampler.h>
+#include <util/HeightMapSampler.h>
 
 #include <glm/vec2.hpp>
 
-namespace WorldGenerator {
-void generatePerlin(World *world) {
+#include <iostream>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
+namespace {
+void generate(World *world, const char *imagePath) {
     size_t maxChunkX = Settings::getXChunks();
     size_t maxChunkY = Settings::getYChunks();
     size_t maxChunkZ = Settings::getZChunks();
@@ -19,6 +25,15 @@ void generatePerlin(World *world) {
     float amplitude = Settings::getAmplitude();
     float frequency = Settings::getFrequency();
     float octCount = Settings::getOctCount();
+
+    int x,y,c;
+    unsigned char* image = nullptr;
+    
+    if (imagePath) {
+        printf(imagePath);
+        image = stbi_load(imagePath, &x, &y, &c, 0);
+        if (!image) std::cout << "WARNING::WORLD_GENERATOR::PERLIN_FALLBACK";
+    }
 
     for (size_t chunkX = 0u; chunkX < maxChunkX; chunkX++) {
         for (size_t chunkZ = 0u; chunkZ < maxChunkZ; chunkZ++) {
@@ -33,7 +48,14 @@ void generatePerlin(World *world) {
                 for (size_t voxelZ = 0u; voxelZ < chunkSize; voxelZ++) {
                     // Sample height
                     glm::vec2 position(chunkX * chunkSize + voxelX, chunkZ * chunkSize + voxelZ);
-                    float sampleHeight = PerlinGenerator::sample(position, amplitude, frequency, octCount);
+
+                    float sampleHeight;
+                    if (imagePath) {
+                        sampleHeight = HeightMapSampler::sample(position, amplitude, image, x, y);
+                    }
+                    else {
+                       sampleHeight = PerlinSampler::sample(position, amplitude, frequency, octCount);
+                    }
 
                     // Force atleast 1 high
                     sampleHeight = std::max(sampleHeight, 1.0f);
@@ -84,6 +106,8 @@ void generatePerlin(World *world) {
                                 uint32_t currentHeight = h + (chunkSize * chunkY);
                                 if (currentHeight >= bottomHeight && currentHeight <= topHeight) {
                                     if (!isBound || currentHeight <= sampleHeight) {
+                                        size_t totalHeight = chunkY * chunkSize + h;
+                                        if (totalHeight > material.maxHeight || totalHeight < material.minHeight) continue;
                                         world->addBlock(chunkX, chunkY, chunkZ, voxelX, h, voxelZ, materialID);
                                     }
                                 }
@@ -99,5 +123,16 @@ void generatePerlin(World *world) {
             }
         }
     }
+}
+}
+
+namespace WorldGenerator {
+void fromPerlin(World *world) {
+    generate(world, nullptr);
+}
+
+void fromHeightMap(World *world) {
+    const char *image_path = Settings::getHeightMapPath();
+    generate(world, image_path);
 }
 } // namespace WorldGenerator

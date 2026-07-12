@@ -24,6 +24,9 @@ size_t zChunks = 1u;
 size_t bottomTrim = 0u;
 size_t topTrim = 0u;
 
+// Height Map
+std::string heightMapPath = "";
+
 // Perlin
 float amplitude = 128.0f;
 float frequency = 0.007f;
@@ -67,7 +70,8 @@ void save() {
               << "bottomTrim = " << bottomTrim << "\n"
               << "topTrim = " << topTrim << "\n"
 
-              << "[Perlin]\n"
+              << "[Terrain]\n"
+              << "heightMapPath = " << heightMapPath << "\n"
               << "amplitude = " << amplitude << "\n"
               << "frequency = " << frequency << "\n"
               << "octCount = " << octCount << "\n"
@@ -85,6 +89,8 @@ void save() {
                   << "mat" << i << "Offset = " << mat.offset << "\n"
                   << "mat" << i << "MinDepth = " << mat.minDepth << "\n"
                   << "mat" << i << "MaxDepth = " << mat.maxDepth << "\n"
+                  << "mat" << i << "MinHeight = " << mat.minHeight << "\n"
+                  << "mat" << i << "MaxHeight = " << mat.maxHeight<< "\n"
                   << "mat" << i << "Color = " << mat.color.toHex() << "\n";
     }
 
@@ -123,10 +129,11 @@ void reload() {
         bottomTrim = reader.GetInteger("WorldSize", "bottomTrim", 0u);
         topTrim = reader.GetInteger("WorldSize", "topTrim", 0u);
 
-        // Perlin
-        amplitude = reader.GetReal("Perlin", "amplitude", 128.0f);
-        frequency = reader.GetReal("Perlin", "frequency", 0.007f);
-        octCount = reader.GetInteger("Perlin", "octCount", 4u);
+        // Terrain
+        heightMapPath = reader.GetString("Terrain", "heightMapPath", "");
+        amplitude = reader.GetReal("Terrain", "amplitude", 128.0f);
+        frequency = reader.GetReal("Terrain", "frequency", 0.007f);
+        octCount = reader.GetInteger("Terrain", "octCount", 4u);
 
         // Materials
         materials[0] = Material();
@@ -139,6 +146,8 @@ void reload() {
             materials[i].offset = reader.GetInteger("Materials", "mat" + std::to_string(i) + "Offset", materials[0].offset);
             materials[i].minDepth = reader.GetInteger("Materials", "mat" + std::to_string(i) + "MinDepth", materials[0].minDepth);
             materials[i].maxDepth = reader.GetInteger("Materials", "mat" + std::to_string(i) + "MaxDepth", materials[0].maxDepth);
+            materials[i].minHeight = reader.GetInteger("Materials", "mat" + std::to_string(i) + "MinHeight", materials[0].minHeight);
+            materials[i].maxHeight = reader.GetInteger("Materials", "mat" + std::to_string(i) + "MaxHeight", materials[0].maxHeight);
             materials[i].color = reader.GetUnsigned("Materials", "mat" + std::to_string(i) + "Color", materials[0].color.toHex());
             materials[i].isBound = reader.GetBoolean("Materials", "mat" + std::to_string(i) + "IsBound", true);
         }
@@ -177,11 +186,13 @@ void setZChunks(size_t size) { zChunks = size; }
 void setBottomTrim(size_t size) { bottomTrim = size; }
 void setTopTrim(size_t size) { topTrim = size; }
 
-// Perlin
+// Terrain
+const char *getHeightMapPath() { return heightMapPath.c_str(); }
 float getAmplitude() { return amplitude; }
 float getFrequency() { return frequency; }
 float getOctCount() { return octCount; }
 
+void setHeightMapPath(const char *p) { heightMapPath = p; }
 void setAmplitude(float a) { amplitude = a; }
 void setFrequency(float f) { frequency = f; }
 void setOctCount(float o) { octCount = o; }

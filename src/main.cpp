@@ -8,7 +8,7 @@ int main() {
     World world;
     Game::useWorld(&world);
 
-    WorldGenerator::generatePerlin(&world);
+    WorldGenerator::fromHeightMap(&world);
 
     while (Game::isRunning()) {
         Game::render();
